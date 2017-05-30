@@ -14,15 +14,15 @@ class Minihull extends Minibase {
   }
 
   users() {
-    return db.get("users");
+    return this.db.get("users");
   }
 
   segments() {
-    return db.get("segments");
+    return this.db.get("segments");
   }
 
   ships() {
-    return db.get("ships");
+    return this.db.get("ships");
   }
 
   lastReq() {

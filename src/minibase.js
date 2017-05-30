@@ -17,7 +17,6 @@ const shell = require("shelljs");
 const moment = require("moment");
 
 class Minibase {
-
   constructor({ enableHttps = false }) {
     this.app = express();
     this.db = low();
@@ -50,6 +49,8 @@ class Minibase {
     this.app.use(bodyParser.json());
     this.app.use((req, res, next) => {
       this.requests.get("incoming").push(_.pick(req, "headers", "url", "method", "body", "query", "params")).write();
+      this.emit("incoming.request", req);
+      this.emit("incoming.request."+(this.requests.get("incoming").value().length), req);
       next();
     });
 
@@ -59,9 +60,12 @@ class Minibase {
           .use(superagentPromisePlugin)
           .on("request", (reqData) => {
             this.requests.get("outgoing").push(reqData).write();
+            this.emit("outgoing.request", reqData);
+            this.emit("outgoing.request."+(this.requests.get("outgoing").value().length), reqData);
           });
       };
     });
+    return this;
   }
 
   listen(port) {

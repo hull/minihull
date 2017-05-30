@@ -17,12 +17,20 @@ module.exports = function setupApp(minihull) {
     res.json(minihull.db.get("segments").value());
   });
 
+  hullRouter.get("/app", (req, res) => {
+    res.json(minihull.db.get("ships").find({ id: req.header("Hull-App-Id") }).value());
+  });
+
+  hullRouter.put("/app", (req, res) => {
+    res.json({});
+  });
+
   hullRouter.get("/:id", (req, res) => {
     res.json(minihull.db.get("ships").find({ id: req.params.id }).value());
   });
 
-  hullRouter.get("/app", (req, res) => {
-    res.json(minihull.db.get("ships").find({ id: req.header("Hull-App-Id") }).value());
+  hullRouter.put("/:id", (req, res) => {
+    res.json({});
   });
 
   hullRouter.post("/firehose", (req, res) => {

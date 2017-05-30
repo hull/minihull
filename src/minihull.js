@@ -8,7 +8,6 @@ const setupApp = require("./minihull/setup-app");
 
 class Minihull extends Minibase {
   constructor(options = {}) {
-    // options.enableHttps = options.enableHttps || true;
     super(options);
     setupDb(this);
     setupApp(this);

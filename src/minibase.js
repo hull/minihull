@@ -18,7 +18,7 @@ const moment = require("moment");
 
 class Minibase {
 
-  constructor({ enableHttps = true }) {
+  constructor({ enableHttps = false }) {
     this.app = express();
     this.db = low();
     this.requests = low().defaults({ incoming: [], outgoing: [] });

@@ -1,0 +1,28 @@
+#!/usr/bin/env node
+
+const Minihull = require("../src/minihull");
+const ReplServer = require("../src/repl-server");
+
+const minihull = new Minihull();
+const replServer = ReplServer("minihull > ");
+const port = 3000;
+
+function mixinContext() {
+  Object.assign(replServer.context, minihull);
+  Object.getOwnPropertyNames(Object.getPrototypeOf(minihull)).map(funcName => {
+    replServer.context[funcName] = minihull[funcName].bind(minihull);
+  })
+}
+
+minihull.listen(port)
+  .then(() => {
+    console.log(`minihull listening on ${port}`);
+    replServer.displayPrompt();
+  });
+
+mixinContext();
+replServer.on('reset', mixinContext);
+replServer.on('exit', () => {
+  minihull.close();
+});
+

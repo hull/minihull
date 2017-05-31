@@ -22,7 +22,8 @@ module.exports = function setupApp(minihull) {
   });
 
   hullRouter.put("/app", (req, res) => {
-    res.json({});
+    _.merge(minihull.db.get("ships").find({ id: req.header("Hull-App-Id") }), req.body);
+    res.json(minihull.db.get("ships").find({ id: req.header("Hull-App-Id") }).value());
   });
 
   hullRouter.get("/:id", (req, res) => {
@@ -30,7 +31,8 @@ module.exports = function setupApp(minihull) {
   });
 
   hullRouter.put("/:id", (req, res) => {
-    res.json({});
+    _.merge(minihull.db.get("ships").find({ id: req.params.id }), req.body);
+    res.json(minihull.db.get("ships").find({ id: req.params.id }));
   });
 
   hullRouter.post("/firehose", (req, res) => {

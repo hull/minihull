@@ -112,12 +112,11 @@ class Minihull extends Minibase {
     };
     return Promise.all(this.db.get("ships").reduce((acc, ship) => {
       _.map(ship.manifest.subscriptions, subscription => {
-        return acc.concat(this.post(`${ship.url}${subscription.url}?ship=${ship.id}&organization=localhost:${this.port}&secret=1234`, {
-          json: body,
-          headers: {
-            "x-amz-sns-message-type": "dummy"
-          }
-        }));
+        acc.push(
+          this.post(`${ship.url}${subscription.url}?ship=${ship.id}&organization=localhost:${this.port}&secret=1234`)
+          .set("x-amz-sns-message-type", "dummy")
+          .send(body)
+        );
       });
       return acc;
     }, []));

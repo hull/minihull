@@ -10,7 +10,8 @@ const request = require("superagent");
 const superagentPromisePlugin = require("superagent-promise-plugin");
 const _ = require("lodash");
 const Promise = require("bluebird");
-const util = require('util');
+const util = require("util");
+const sinon = require("sinon");
 
 const faker = require("faker");
 const shell = require("shelljs");
@@ -45,13 +46,29 @@ class Minibase {
       this.server = http.createServer(this.app);
     }
 
-
     this.app.use(bodyParser.json());
     this.app.use((req, res, next) => {
       this.requests.get("incoming").push(_.pick(req, "headers", "url", "method", "body", "query", "params")).write();
       this.emit("incoming.request", req);
       this.emit("incoming.request."+(this.requests.get("incoming").value().length), req);
+      this.emit("incoming.request#"+(this.requests.get("incoming").value().length), req);
+      this.emit("incoming.request@"+req.url, req);
       next();
+    });
+
+    ["get", "post", "put", "delete"].map(method => {
+      this[`mock${_.upperFirst(method)}`] = (url, callback) => {
+        this.appStub = this.appStub.withArgs(sinon.match.any, sinon.match.any, sinon.match.any, _.upperCase(method), url)
+          .callsFake(callback)
+      };
+    });
+    this.appStub = function appStub(method, url, req, res, next) {
+      next();
+    };
+    sinon.stub(this, "appStub");
+    this.appStub.callThrough();
+    this.app.use((req, res, next) => {
+      this.appStub(req, res, next, req.method, req.url);
     });
 
     ["get", "post", "put", "delete"].map(verb => {
@@ -62,6 +79,7 @@ class Minibase {
             this.requests.get("outgoing").push(reqData).write();
             this.emit("outgoing.request", reqData);
             this.emit("outgoing.request."+(this.requests.get("outgoing").value().length), reqData);
+            this.emit("outgoing.request#"+(this.requests.get("outgoing").value().length), reqData);
           });
       };
     });

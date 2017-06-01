@@ -57,9 +57,8 @@ class Minibase {
     });
 
     ["get", "post", "put", "delete"].map(method => {
-      this[`mock${_.upperFirst(method)}`] = (url, callback) => {
-        this.appStub = this.appStub.withArgs(sinon.match.any, sinon.match.any, sinon.match.any, _.upperCase(method), url)
-          .callsFake(callback)
+      this[`stub${_.upperFirst(method)}`] = (url, callback) => {
+        return this.appStub.withArgs(sinon.match.any, sinon.match.any, sinon.match.any, _.upperCase(method), url);
       };
     });
     this.appStub = function appStub(method, url, req, res, next) {

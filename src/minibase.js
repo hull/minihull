@@ -58,10 +58,10 @@ class Minibase {
 
     ["get", "post", "put", "delete"].map(method => {
       this[`stub${_.upperFirst(method)}`] = (url, callback) => {
-        return this.appStub.withArgs(sinon.match.any, sinon.match.any, sinon.match.any, _.upperCase(method), url);
+        return this.appStub.withArgs(sinon.match.any, sinon.match.any, sinon.match.any, _.upperCase(method), sinon.match(url));
       };
     });
-    this.appStub = function appStub(method, url, req, res, next) {
+    this.appStub = function appStub(req, res, next, method, url) {
       next();
     };
     sinon.stub(this, "appStub");

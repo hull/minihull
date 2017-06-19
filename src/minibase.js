@@ -49,10 +49,11 @@ class Minibase {
     this.app.use(bodyParser.json());
     this.app.use((req, res, next) => {
       this.requests.get("incoming").push(_.pick(req, "headers", "url", "method", "body", "query", "params")).write();
-      this.emit("incoming.request", req);
-      this.emit("incoming.request."+(this.requests.get("incoming").value().length), req);
-      this.emit("incoming.request#"+(this.requests.get("incoming").value().length), req);
-      this.emit("incoming.request@"+req.url, req);
+      const count = this.requests.get("incoming").value().length;
+      this.emit("incoming.request", req, count);
+      this.emit("incoming.request."+count, req, count);
+      this.emit("incoming.request#"+count, req, count);
+      this.emit("incoming.request@"+req.url, req, count);
       next();
     });
 

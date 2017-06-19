@@ -11,6 +11,15 @@ class Minihull extends Minibase {
     super(options);
     setupDb(this);
     setupApp(this);
+    this.hostname = options.hostname || "localhost";
+    this.publicAddr = options.publicAddr;
+  }
+
+  getOrgAddr() {
+    if (this.publicAddr) {
+      return this.publicAddr;
+    }
+    return `${this.hostname}:${this.port}`;
   }
 
   users() {
@@ -80,7 +89,7 @@ class Minihull extends Minibase {
 
   callFirstShip(url) {
     const ship = this.db.get("ships").get(0).value();
-    return this.post(`${ship.url}${url}?ship=${ship.id}&organization=localhost:${this.port}&secret=1234`);
+    return this.post(`${ship.url}${url}?ship=${ship.id}&organization=${this.getOrgAddr()}&secret=1234`);
   }
 
   updateFirstShip(settings) {
@@ -90,9 +99,10 @@ class Minihull extends Minibase {
 
   sendBatchToFirstShip() {
     const ship = this.db.get("ships").get(0).value();
-    return this.post(`${ship.url}/batch?ship=${ship.id}&organization=localhost:${this.port}&secret=1234`)
+    console.log(`${ship.url}/batch?ship=${ship.id}&organization=${this.getOrgAddr()}&secret=1234`);
+    return this.post(`${ship.url}/batch?ship=${ship.id}&organization=${this.getOrgAddr()}&secret=1234`)
       .send({
-        url: `http://localhost:${this.port}/_batch-all`,
+        url: `http://${this.getOrgAddr()}/_batch-all`,
         format: "json"
       });
   }
@@ -113,7 +123,7 @@ class Minihull extends Minibase {
     return Promise.all(this.db.get("ships").reduce((acc, ship) => {
       _.map(ship.manifest.subscriptions, subscription => {
         acc.push(
-          this.post(`${ship.url}${subscription.url}?ship=${ship.id}&organization=localhost:${this.port}&secret=1234`)
+          this.post(`${ship.url}${subscription.url}?ship=${ship.id}&organization=${this.getOrgAddr()}&secret=1234`)
           .set("x-amz-sns-message-type", "dummy")
           .send(body)
         );
@@ -148,7 +158,8 @@ class Minihull extends Minibase {
       .then(res => {
         return this.db.get("ships").insert({
           url: shipUrl,
-          manifest: res.body
+          manifest: res.body,
+          private_settings: {}
         }).write();
       });
   }
@@ -156,7 +167,7 @@ class Minihull extends Minibase {
   dashboard(shipId) {
     const ship = this.db.get("ships").find({ id: shipId }).value();
 
-    return `${ship.url}${ship.manifest.admin}?ship=${ship.id}&organization=localhost:${this.port}&secret=1234`;
+    return `${ship.url}${ship.manifest.admin}?ship=${ship.id}&organization=${this.getOrgAddr()}&secret=1234`;
   }
 
   batch(userIds) {

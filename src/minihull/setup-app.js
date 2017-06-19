@@ -22,7 +22,7 @@ module.exports = function setupApp(minihull) {
   });
 
   hullRouter.put("/app", (req, res) => {
-    _.merge(minihull.db.get("ships").find({ id: req.header("Hull-App-Id") }), req.body);
+    minihull.db.get("ships").find({ id: req.header("Hull-App-Id") }).set("private_settings", req.body.private_settings).write();
     res.json(minihull.db.get("ships").find({ id: req.header("Hull-App-Id") }).value());
   });
 
@@ -31,7 +31,7 @@ module.exports = function setupApp(minihull) {
   });
 
   hullRouter.put("/:id", (req, res) => {
-    _.merge(minihull.db.get("ships").find({ id: req.params.id }), req.body);
+    minihull.db.get("ships").find({ id: req.header("Hull-App-Id") }).set("private_settings", req.body.private_settings).write();
     res.json(minihull.db.get("ships").find({ id: req.params.id }));
   });
 
@@ -57,21 +57,8 @@ module.exports = function setupApp(minihull) {
   // minihull helpers
   const minihullRouter = new Router();
 
-  minihullRouter.get("/_install", (req, res) => {
-    const result = minihull.install();
-    res.json(result);
-  });
-
   minihullRouter.get("/_dashboard", (req, res) => {
     res.json({ to: "implement" });
-  });
-
-  minihullRouter.get("/_uninstall", (req, res) => {
-    res.json({ to: "implement" });
-  });
-
-  minihullRouter.get("/_batch", (req, res) => {
-    res.end(minihull.batch(req.query.users.split(",")));
   });
 
   minihullRouter.get("/_batch-all", (req, res) => {

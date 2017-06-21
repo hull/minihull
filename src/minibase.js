@@ -2,9 +2,7 @@ const express = require("express");
 const low = require("lowdb");
 const EventEmitter = require("events");
 const bodyParser = require("body-parser");
-const https = require("https");
 const http = require("http");
-const keypair = require("self-signed");
 const fs = require("fs");
 const request = require("superagent");
 const superagentPromisePlugin = require("superagent-promise-plugin");
@@ -17,8 +15,12 @@ const faker = require("faker");
 const shell = require("shelljs");
 const moment = require("moment");
 
+/**
+ * Base class allowing to run simple mocking server with express and lowdb.
+ * Can be extended to provide custom functionality.
+ */
 class Minibase {
-  constructor({ enableHttps = false }) {
+  constructor() {
     this.app = express();
     this.db = low();
     this.requests = low().defaults({ incoming: [], outgoing: [] });
@@ -27,24 +29,7 @@ class Minibase {
     this.faker = faker;
     this._ = _;
     this.port;
-
-    if (enableHttps) {
-      const options = keypair({
-        name: 'localhost',
-        city: 'Blacksburg',
-        state: 'Virginia',
-        organization: 'Test',
-        unit: 'Test'
-      }, {
-        alt: ['127.0.0.1']
-      });
-      this.server = https.createServer({
-        key: options.private,
-        cert: options.cert
-      }, this.app);
-    } else {
-      this.server = http.createServer(this.app);
-    }
+    this.server = http.createServer(this.app);
 
     this.app.use(bodyParser.json());
     this.app.use((req, res, next) => {
@@ -86,6 +71,11 @@ class Minibase {
     return this;
   }
 
+  /**
+   * Start the internal Express application
+   * @param  {Number} port
+   * @return {Promise}
+   */
   listen(port) {
     this.port = port;
     return Promise.fromCallback((callback) => {
@@ -93,24 +83,36 @@ class Minibase {
     });
   }
 
+  /**
+   * Close the server - important for automatic testing when you start and stop the server multiple times.
+   */
   close() {
     return this.server.close();
   }
 
+  /**
+   * For interactive usage - allows to set current internal db state to a file on disk.
+   * @param  {String} name name of the json file - will be appended with `json` extension
+   */
   save(name) {
     fs.writeFileSync(`${name}.json`, JSON.stringify(this.db.getState()));
   }
 
-  resetDbState() {
-    this.db.setState({});
-  }
-
+  /**
+   * For interactive usage - allows to load previously saved db state back to application.
+   * @param  {String} name name of the json file - will be appended with `json` extension
+   * @return {Object}
+   */
   load(name) {
     const newState = JSON.parse(fs.readFileSync(`${name}.json`));
     this.db.setState(newState);
     return this.db.getState();
   }
 
+  /**
+   * For interactive usage - ists all json files in current directory
+   * @return {Arrayy}
+   */
   list() {
     return this.shell.ls('*.json').map(f => f.replace(".json", ""));
   }

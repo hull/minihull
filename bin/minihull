@@ -5,7 +5,7 @@ const Minibase = require("../src/minibase");
 const ReplServer = require("../src/repl-server");
 
 const minihull = new Minihull({
-  publicAddr: process.argv[2]
+  overrideOrgAddr: process.argv[2]
 });
 const replServer = ReplServer("minihull > ");
 const port = 3000;

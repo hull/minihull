@@ -9,7 +9,7 @@ module.exports = function minihullRouter(minihull) {
     res.json({
       id: "minihull",
       name: "minihull",
-      domain: this.getOrgAddr()
+      domain: minihull.getOrgAddr()
     });
   });
 

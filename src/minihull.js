@@ -57,6 +57,32 @@ class Minihull extends Minibase {
   }
 
   /*
+   * --- High level stubs ---
+   */
+  stubConnector(object) {
+    this.stubGet(`/api/v1/${object.id}`).returnsJson(object);
+    this.stubPut(`/api/v1/${object.id}`).returnsJson(object);
+
+    this.stubGet("/api/v1/app").returnsJson(object);
+    this.stubPut(`/api/v1/app`).returnsJson(object);
+    return this;
+  }
+
+  stubSegments(segments) {
+    this.stubGet("/api/v1/segments").returnsJson(segments);
+    return this;
+  }
+
+  postConnector(id, url) {
+    return this.post(url)
+      .query({
+        organization: this.getOrgAddr(),
+        ship: id,
+        secret: this.secret
+      });
+  }
+
+  /*
    * --- Fake methods ---
    */
 

@@ -42,11 +42,27 @@ class Minibase {
       next();
     });
 
+    sinon.addBehavior("returnsJson", (fake, json) => {
+      fake.callsFake((req, res) => {
+        res.json(json)
+      });
+    });
+
+    sinon.addBehavior("returnsStatus", (fake, status) => {
+      fake.callsFake((req, res) => {
+        res.status(status).end();
+      });
+    });
+
     ["get", "post", "put", "delete"].map(method => {
       this[`stub${_.upperFirst(method)}`] = (url, callback) => {
         return this.appStub.withArgs(sinon.match.any, sinon.match.any, sinon.match.any, _.upperCase(method), sinon.match(url));
       };
     });
+    this.stubAll = (url, callback) => {
+      return this.appStub.withArgs(sinon.match.any, sinon.match.any, sinon.match.any, sinon.match.any, sinon.match(url));
+    };
+
     this.appStub = function appStub(req, res, next, method, url) {
       next();
     };

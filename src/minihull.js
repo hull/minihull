@@ -82,6 +82,24 @@ class Minihull extends Minibase {
       });
   }
 
+  notifyConnector(id, url, topic, message) {
+    const body = {
+      Type: "Notification",
+      Timestamp: new Date(),
+      Subject: topic,
+      Message: JSON.stringify(message)
+    };
+
+    return this.post(url)
+      .query({
+        organization: this.getOrgAddr(),
+        ship: id,
+        secret: this.secret
+      })
+      .set("x-amz-sns-message-type", "dummy")
+      .send(body);
+  }
+
   /*
    * --- Fake methods ---
    */

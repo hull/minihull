@@ -111,6 +111,7 @@ class Minibase {
    * @param  {String} name name of the json file - will be appended with `json` extension
    */
   save(name) {
+    console.warn("minibase.save deprecated, use minibase.db.save instead");
     fs.writeFileSync(`${name}.json`, JSON.stringify(this.db.getState()));
   }
 
@@ -120,6 +121,7 @@ class Minibase {
    * @return {Object}
    */
   load(name) {
+    console.warn("minibase.load deprecated, use minibase.db.load instead");
     const newState = JSON.parse(fs.readFileSync(`${name}.json`));
     this.db.setState(newState);
     return this.db.getState();

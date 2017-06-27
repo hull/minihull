@@ -8,7 +8,7 @@ module.exports = function ReplServer(prompt) {
     eval: function(cmd, context, filename, callback) {
       var result = vm.runInContext(cmd, context);
 
-      if (result && result.write instanceof Function) {
+      if (result && result.write instanceof Function && result.__wrapped__) {
         return callback(null, result.write());
       }
 

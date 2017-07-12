@@ -2,6 +2,12 @@
 
 ## scriptable usage
 
+For automatic tests use the following methods:
+
+- **stubConnector()** - for stubbing response for connector
+- **stubSegments()** - for stubbing response for segments
+- **stubBatch()** - for stubbing batching to connector
+
 ```js
 const MiniHull = require("minihull");
 const miniHull = new Minihull();

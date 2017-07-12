@@ -61,16 +61,18 @@ class MiniHull extends MiniApplication {
    * --- High level stubs ---
    */
   stubConnector(object) {
-    this.stubGet(`/api/v1/${object.id}`).returnsJson(object);
-    this.stubPut(`/api/v1/${object.id}`).returnsJson(object);
-
-    this.stubGet("/api/v1/app").returnsJson(object);
-    this.stubPut(`/api/v1/app`).returnsJson(object);
+    this.stubApp(`/api/v1/${object.id}`).respond(object);
+    this.stubApp("/api/v1/app").respond(object);
     return this;
   }
 
   stubSegments(segments) {
-    this.stubGet("/api/v1/segments").returnsJson(segments);
+    this.stubApp("get", "/api/v1/segments").respond(segments);
+    return this;
+  }
+
+  stubBatch(objects) {
+    this.stubApp("get", "/_batch").respond(objects.map(o => JSON.stringify(o)).join("\n"));
     return this;
   }
 

@@ -2,14 +2,15 @@ const _ = require("lodash");
 const Promise = require("bluebird");
 const fs = require("fs");
 const lodashId = require("lodash-id");
+const MiniApplication = require("mini-application");
+const crypto = require("crypto");
 
-const Minibase = require("./minibase");
-const minihullRouter = require("./minihull-router");
+const minihullRouter = require("./router");
 
 /**
  * A class build upon Minibase which adds specific options related to the Hull platform.
  */
-class Minihull extends Minibase {
+class MiniHull extends MiniApplication {
   constructor(options = {}) {
     super();
 
@@ -18,7 +19,7 @@ class Minihull extends Minibase {
     this.secret = options.secret || "1234";
 
     // setup the internal db
-    lodashId.createId = () => require('crypto').randomBytes(12).toString('hex');
+    lodashId.createId = () => this.fakeId();
     this.db._.mixin(lodashId);
     this.db.defaults({ connectors: [], users: [], segments: [] }).write();
 
@@ -82,6 +83,15 @@ class Minihull extends Minibase {
       });
   }
 
+  batchConnector(id, url) {
+    return this.postConnector(id, url)
+      .send({
+        url: `http://${this.getOrgAddr()}/_batch`,
+        format: "json"
+      })
+      .then((res) => res);
+  }
+
   notifyConnector(id, url, topic, message) {
     const body = {
       Type: "Notification",
@@ -90,12 +100,7 @@ class Minihull extends Minibase {
       Message: JSON.stringify(message)
     };
 
-    return this.post(url)
-      .query({
-        organization: this.getOrgAddr(),
-        ship: id,
-        secret: this.secret
-      })
+    return this.postConnector(id, url)
       .set("x-amz-sns-message-type", "dummy")
       .send(body);
   }
@@ -103,6 +108,10 @@ class Minihull extends Minibase {
   /*
    * --- Fake methods ---
    */
+
+  fakeId() {
+    return crypto.randomBytes(12).toString('hex');
+  }
 
   /**
    * Fakes basic user objects
@@ -186,8 +195,10 @@ class Minihull extends Minibase {
       ? this.db.get("connectors").find({ id: connectorId }).value()
       : this.db.get("connectors").get(0).value();
 
+    if (!connector.manifest.admin) {
+      return console.log("No dashboard available");
+    }
     const url = this._getConnectorUrl(connector, connector.manifest.admin);
-
     return this.shell.exec(`open "${url}"`);
   }
 
@@ -198,12 +209,12 @@ class Minihull extends Minibase {
    * @param  {String} connectorId
    * @return {Request}
    */
-  mimicCallConnector(url, connectorId) {
+  mimicPostConnector(url, connectorId) {
     const connector = connectorId
       ? this.db.get("connectors").find({ id: connectorId }).value()
       : this.db.get("connectors").get(0).value();
 
-    return this.post(`${connector._url}${url}?ship=${connector.id}&organization=${this.getOrgAddr()}&secret=1234`);
+    return this.postConnector(connector.id, connector._url);
   }
 
   /**
@@ -214,18 +225,10 @@ class Minihull extends Minibase {
    * @return {Promise}
    */
   mimicSendNotification(topic, message) {
-    const body = {
-      Type: "Notification",
-      Timestamp: new Date(),
-      Subject: topic,
-      Message: JSON.stringify(message)
-    };
     return Promise.all(this.db.get("connectors").reduce((acc, connector) => {
       _.map(connector.manifest.subscriptions, subscription => {
         acc.push(
-          this.post(`${connector._url}${subscription.url}?ship=${connector.id}&organization=${this.getOrgAddr()}&secret=1234`)
-          .set("x-amz-sns-message-type", "dummy")
-          .send(body)
+          this.notifyConnector(connector.id, `${connector._url}${subscription.url}`, topic, message)
         );
       });
       return acc;
@@ -277,12 +280,7 @@ class Minihull extends Minibase {
     const connector = connectorId
       ? this.db.get("connectors").find({ id: connectorId }).value()
       : this.db.get("connectors").get(0).value();
-    return this.post(`${connector._url}/batch?ship=${connector.id}&organization=${this.getOrgAddr()}&secret=1234`)
-      .send({
-        url: `http://${this.getOrgAddr()}/_batch`,
-        format: "json"
-      })
-      .then((res) => res);
+    return this.batchConnector(connector.id, `${connector._url}/batch`);
   }
 
   // --- Utilities methods ---
@@ -328,49 +326,6 @@ class Minihull extends Minibase {
     }
     return this.db.get("users").find(ident).value();
   }
-
-
-  // --- Deprecated methods ---
-
-  ships() {
-    console.warn("minihull - Use connectors instead of ships");
-    return this.connectors();
-  }
-
-  batchAll() {
-    console.warn("minihull - Use _getBatchBody instead of batchAll");
-    return this._getBatchBody();
-  }
-
-  callFirstShip(url) {
-    console.warn("minihull - Use mimicCallConnector without second argument instead of callFirstShip");
-    return this.mimicCallConnector(url);
-  }
-
-  sendNotification(topic, message) {
-    console.warn("minihull - Use mimicSendNotification instead of sendNotification");
-    return this.mimicSendNotification(topic, message);
-  }
-
-  updateFirstShip(settings) {
-    console.warn("minihull - Use mimicUpdateConnector instead of updateFirstShip");
-    return this.mimicUpdateConnector(settings);
-  }
-
-  sendBatchToFirstShip() {
-    console.warn("minihull - Use mimicBatchCall instead of sendBatchToFirstShip");
-    return this.mimicBatchCall();
-  }
-
-  updateShip(connectorId, settings) {
-    console.warn("minihull - Use mimicUpdateConnector instead of updateShip");
-    return this.mimicUpdateConnector(settings, connectorId);
-  }
-
-  install(connectorUrl) {
-    console.warn("minihull - use mimicInstall instead of install");
-    return this.mimicInstall(connectorUrl);
-  }
 }
 
-module.exports = Minihull;
+module.exports = MiniHull;

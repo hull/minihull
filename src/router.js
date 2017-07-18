@@ -3,7 +3,7 @@ const Router = require("express").Router;
 /**
  * express routing with main hull features
  */
-module.exports = function minihullRouter(minihull) {
+module.exports = function router(minihull) {
   const hullRouter = new Router();
   hullRouter.get("/", (req, res) => {
     res.json({

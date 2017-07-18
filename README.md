@@ -1,55 +1,46 @@
-# minihull
-
+# Mini Hull
 
 ## scriptable usage
 
-```js
-const Minihull = require("minihull");
-const minihull = new Minihull();
+For automatic tests use the following methods:
 
-minihull.listen(3000);
-
-minihull.minicInstall("http://connector-host:8000")
-.then(() => minihull.mimicCallConnector("/custom-operation"))
-.then(() => {
-  assert(minihull.requests.get("incoming").length, 1);
-  minihull.close();
-});
-```
-
-## extendable usage
+- **stubConnector()** - for stubbing response for connector
+- **stubSegments()** - for stubbing response for segments
+- **stubBatch()** - for stubbing batching to connector
 
 ```js
-const Minibase = require("minihull/src/minibase");
+const MiniHull = require("minihull");
+const miniHull = new Minihull();
+const connectorId = minihull.fakeId();
 
-class Miniapp extends Minibase {
-  constructor(options = {}) {
-    super(options);
+miniHull.listen(3000);
 
-    this.db.defaults({ contacts: [] }).write();
-
-    this.app.get("/contacts", (req, res) => {
-      res.json({
-        contacts: this.db.get("contacts").value()
-      });
-    });
+miniHull.stubConnector({
+  id: connectorId,
+  private_settings: {
+    enrich_segments: ["1"]
   }
+});
+miniHull.stubSegments([{
+  id: "1",
+  name: "A"
+}]);
 
-  customMethod() {}
-}
-
-module.exports = Miniapp;
+miniHull.postConnector(connectorId, "http://localhost:8000/test").then(() => {
+  assert(miniHull.requests.get("incoming").length, 1);
+  miniHull.close();
+});
 ```
 
 ## interactive usage
 
 ```js
-$ bin/minihull
-minihull listening on 3000
-minihull > users()
-minihull > fakeUsers(2)
-minihull > users()
-minihull > mimicInstall("http://connector-host:8000")
-minihull > mimicCallConnector("/custom-operation")
-minihull > requests.get("incoming").value()
+$ bin/mini-hull
+miniHull listening on 3000
+miniHull > fakeUsers(5)
+miniHull > fakeSegments(2)
+miniHull > fakeAssignment()
+miniHull > mimicInstall("http://connector-host:8000")
+miniHull > mimicPostConnector("/custom-operation")
+miniHull > requests.get("incoming").value()
 ```

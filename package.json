@@ -1,27 +1,22 @@
 {
   "name": "minihull",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "description": "",
   "main": "src/mini-hull.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "",
+  "author": "Michał Rączka",
   "dependencies": {
     "bluebird": "^3.5.0",
-    "body-parser": "^1.17.2",
-    "express": "^4.15.3",
     "faker": "^4.1.0",
     "lodash": "^4.17.4",
     "lodash-id": "^0.14.0",
-    "lowdb": "^0.16.2",
-    "mini-application": "^1.0.2",
-    "moment": "^2.18.1",
-    "ngrok": "^2.2.14",
     "shelljs": "^0.7.7",
-    "sinon": "^2.3.2",
-    "superagent": "^3.5.2",
-    "superagent-promise-plugin": "^3.2.0"
+    "mini-application": "^1.0.4"
+  },
+  "optionalDependencies": {
+    "ngrok": "^2.2.14"
   },
   "devDependencies": {
     "documentation": "^4.0.0-rc.1"

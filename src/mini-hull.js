@@ -4,6 +4,8 @@ const fs = require("fs");
 const lodashId = require("lodash-id");
 const MiniApplication = require("mini-application");
 const crypto = require("crypto");
+const faker = require("faker");
+const shell = require("shelljs");
 
 const minihullRouter = require("./router");
 
@@ -121,7 +123,6 @@ class MiniHull extends MiniApplication {
    * @return {Object}
    */
   fakeUsers(count) {
-    const faker = this.faker;
     for (var i = 0; i < count; i++) {
       this.db.get("users").insert({
         first_name: faker.name.firstName(),
@@ -140,7 +141,6 @@ class MiniHull extends MiniApplication {
    */
   fakeSegments(count) {
     const segments = ["Signed up", "Installed yesterday", "Prospects", "Leads", "Active", "Deals", "Demo requests", "Qualified Leads"];
-    const faker = this.faker;
     for (var i = 0; i < count; i++) {
       this.db.get("segments").insert({
         name: segments[Math.floor(Math.random() * segments.length)],
@@ -157,10 +157,10 @@ class MiniHull extends MiniApplication {
   fakeAssignment() {
     return this.db.get("users")
       .map((user) => {
-        const count = this.faker.random.number({ max: this.db.get("segments").size() })
+        const count = faker.random.number({ max: this.db.get("segments").size() })
         for (var i = 0; i < count; i++) {
           user._segment_ids = _.uniq((user._segment_ids || [])
-            .concat(this.faker.random.arrayElement(this.db.get("segments").value()).id));
+            .concat(faker.random.arrayElement(this.db.get("segments").value()).id));
         }
         return user;
       }).write();
@@ -201,7 +201,7 @@ class MiniHull extends MiniApplication {
       return console.log("No dashboard available");
     }
     const url = this._getConnectorUrl(connector, connector.manifest.admin);
-    return this.shell.exec(`open "${url}"`);
+    return shell.exec(`open "${url}"`);
   }
 
   /**

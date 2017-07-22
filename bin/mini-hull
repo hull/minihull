@@ -4,7 +4,7 @@ const url = require("url");
 const MiniHull = require("../src/mini-hull");
 const {
   startReplServer,
-  mixinReplContext
+  setupReplServer
 } = require("mini-application/src/repl");
 
 const port = process.env.PORT || 3000;
@@ -18,13 +18,7 @@ ngrok.connect(port, (err, tunnelUrl) => {
     .then(() => {
       console.log(`miniHull - listening on ${port} as ${hostname}`);
       const replServer = startReplServer("miniHull > ");
-      mixinReplContext(replServer, miniHull);
-      replServer.displayPrompt();
-      replServer.on("reset", mixinReplContext.bind(null, replServer, miniHull));
-      replServer.on("exit", () => {
-        miniHull.close()
-          .then(() => process.exit(0));
-      });
+      setupReplServer(replServer, miniHull);
 
       miniHull.on("outgoing.request", (req) => {
         console.log("outgoing.request", req.method, req.url);

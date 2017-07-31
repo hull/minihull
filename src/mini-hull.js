@@ -250,16 +250,26 @@ class MiniHull extends MiniApplication {
 
   mimicUserEntersSegment(ident, segmentId) {
     const user = this._findUser(ident);
-    user._segment_ids = _.unique((user._segment_ids || []).concat(segmentId));
+    user._segment_ids = _.uniq((user._segment_ids || []).concat(segmentId));
     const segments = this._getMatchingSegments(user).value();
-    return this.mimicSendNotification("user_report:update", { user, segments, changes: [], events: []});
+    const changes = {
+      segments: {
+        enter: this.segments().filter({ id: segmentId }).value()
+      }
+    };
+    return this.mimicSendNotification("user_report:update", { user, segments, changes, events: []});
   }
 
   mimicUserExitsSegment(ident, segmentId) {
     const user = this._findUser(ident);
     _.remove(user._segment_ids, (sId) => sId == segmentId);
     const segments = this._getMatchingSegments(user).value();
-    return this.mimicSendNotification("user_report:update", { user, segments, changes: [], events: []});
+    const changes = {
+      segments: {
+        left: this.segments().filter({ id: segmentId }).value()
+      }
+    };
+    return this.mimicSendNotification("user_report:update", { user, segments, changes, events: []});
   }
 
   mimicUpdateUser(ident, traits) {
@@ -276,6 +286,14 @@ class MiniHull extends MiniApplication {
       : this.db.get("connectors").get(0).value();
     connector.private_settings = _.merge(connector.private_settings || {}, settings);
     return this.mimicSendNotification("ship:update", connector);
+  }
+
+  mimicUpdateSegment(segmentName, segmentId) {
+    const segment = segmentId
+      ? this.db.get("segments").find({ id: segmentId }).value()
+      : this.db.get("segments").get(0).value();
+    segment.name = segmentName;
+    return this.mimicSendNotification("segment:update", segment);
   }
 
   mimicBatchCall(connectorId) {
@@ -326,7 +344,7 @@ class MiniHull extends MiniApplication {
     if (_.isString(ident)) {
       findObject = { id: ident };
     }
-    return this.db.get("users").find(ident).value();
+    return this.db.get("users").find(findObject).value();
   }
 }
 

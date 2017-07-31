@@ -27,7 +27,9 @@ module.exports = function router(minihull) {
   });
 
   hullRouter.get("/:id", (req, res) => {
-    res.json(minihull.db.get("connectors").find({ id: req.params.id }).value());
+    const connector = minihull.db.get("connectors").find({ id: req.params.id }).value();
+    const segment = minihull.db.get("segments").find({ id: req.params.id }).value();
+    res.json(connector || segment);
   });
 
   hullRouter.put("/:id", (req, res) => {
@@ -36,6 +38,10 @@ module.exports = function router(minihull) {
   });
 
   hullRouter.post("/firehose", (req, res) => {
+    res.end("ok");
+  });
+
+  hullRouter.post("/extract/user_reports", (req, res) => {
     res.end("ok");
   });
 

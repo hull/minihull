@@ -106,7 +106,28 @@ class MiniHull extends MiniApplication {
 
     return this.postConnector(id, url)
       .set("x-amz-sns-message-type", "dummy")
-      .send(body);
+      .send(body)
+      .then((res) => res);
+  }
+
+  smartNotifyConnector(connector, url, channel, messages, segments = []) {
+    const body = {
+      notification_id: this.fakeId(),
+      configuration: {
+        id: connector.id,
+        organization: this.getOrgAddr(),
+        secret: this.secret
+      },
+      connector,
+      segments,
+      channel,
+      messages
+    };
+
+    return this.post(url)
+      .set("x-hull-smart-notifier", "dummy")
+      .send(body)
+      .then((res) => res);
   }
 
   /*

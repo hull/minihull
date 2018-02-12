@@ -1,7 +1,13 @@
 const _ = require("lodash");
 const Router = require("express").Router;
+
 /**
- * express routing with main hull features
+ * This is an [Express](https://expressjs.com/) router which applies to internal MiniHull
+ * http server special endpoint for `mimic*` methods which serve content from internal database (`db` param).
+ * This router is applied to every MiniHull instance in it's constructor
+ *
+ * @param  {Object} minihull Minihull instance
+ * @return {Router}          Express router
  */
 module.exports = function router(minihull) {
   const hullRouter = new Router();

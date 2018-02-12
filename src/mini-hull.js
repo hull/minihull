@@ -10,7 +10,28 @@ const shell = require("shelljs");
 const minihullRouter = require("./router");
 
 /**
- * A class build upon Minibase which adds specific options related to the Hull platform.
+ * A class build upon [MiniApplication](https://github.com/michaloo/mini-application) which allows to mimic [Hull Platform](https://hull.io) behavior.
+ *
+ * It comes with four different flavors of methods: "verb", `stub*`, `mimic*` and `fake*` methods:
+ *
+ * - "verb" methods - performs basic interactions between Hull and Connector,
+ * they need to be supplied with all Connector information and don't rely on state other than external Connector.
+ *
+ * - `stub*` methods - stubs responses on specific endpoint of the MiniHull. Useful to stub state of the Platform end before
+ * executing operations (see "verb" methods). Since they don't rely on internal state of MiniHull instance they
+ * are most useful for integration tests.
+ *
+ * - `mimic*` methods - higher level methods to perform more complex operations, which base on internal
+ * state (`db` param of the class) of the MiniHull instance. Most useful for interactive usage. See `fake*` methods
+ * for complementary helpers.
+ *
+ * - `fake*` methods - to use `mimic*` methods we need internal state of MiniHull database (`db` param of the class).
+ * To make the data seeding easier `fake*` methods provide an easy way of generating testing data.
+ *
+ * *Note:* Underscore methods `_*` are internal utilities and are not part of the public API of the library. Use with caution.
+ *
+ * @param {Object} options setup options
+ * @param {string} options.secret secret used to sign requests to all installed connector instances (see `mimicInstall` method)
  */
 class MiniHull extends MiniApplication {
   constructor(options = {}) {
@@ -30,13 +51,6 @@ class MiniHull extends MiniApplication {
     this.app.get("/_batch", (req, res) => {
       res.end(this._getBatchBody());
     });
-  }
-
-  getOrgAddr() {
-    if (this.overrideOrgAddr) {
-      return this.overrideOrgAddr;
-    }
-    return `${this.hostname}:${this.port}`;
   }
 
   /*
@@ -60,42 +74,54 @@ class MiniHull extends MiniApplication {
   }
 
   /*
-   * --- High level stubs ---
+   * --- Verb methods ---
    */
-  stubConnector(object) {
-    this.stubApp(`/api/v1/${object.id}`).respond(object);
-    this.stubApp("/api/v1/app").respond(object);
-    return this;
-  }
 
-  stubSegments(segments) {
-    this.stubApp("get", "/api/v1/segments").respond(segments);
-    return this;
-  }
-
-  stubBatch(objects) {
-    this.stubApp("get", "/_batch").respond(objects.map(o => JSON.stringify(o)).join("\n"));
-    return this;
-  }
-
+  /**
+   * Performs a basic POST request on connector instance.
+   * Returns a [SuperAgent](https://github.com/visionmedia/superagent) instance,
+   * remember to call `.then` to peform actual call.
+   *
+   * @public
+   * @param  {string} id  Connector id
+   * @param  {string} url Connector url (including path to the endpoint)
+   * @return {superagent} SuperAgent instance
+   */
   postConnector(id, url) {
     return this.post(url)
       .query({
-        organization: this.getOrgAddr(),
+        organization: this._getOrgAddr(),
         ship: id,
         secret: this.secret
       });
   }
 
+  /**
+   * Performs a special POST operation to the connector url
+   *
+   * @public
+   * @param  {string} id  Connector id
+   * @param  {string} url Connector url to batch endpoint
+   * @return {superagent} SuperAgent instance
+   */
   batchConnector(id, url) {
     return this.postConnector(id, url)
       .send({
-        url: `http://${this.getOrgAddr()}/_batch`,
+        url: `http://${this._getOrgAddr()}/_batch`,
         format: "json"
       })
       .then((res) => res);
   }
 
+  /**
+   * Performs a SNS notification to selected connector
+   *
+   * @param  {string} id      Connector id
+   * @param  {string} url     Connector url to notify endpoint
+   * @param  {string} topic   Notification topic
+   * @param  {Object} message Notification message
+   * @return {superagent} SuperAgent instance
+   */
   notifyConnector(id, url, topic, message) {
     const body = {
       Type: "Notification",
@@ -110,12 +136,22 @@ class MiniHull extends MiniApplication {
       .then((res) => res);
   }
 
+  /**
+   * Performs a smart-notifier request to the connector
+   *
+   * @param  {Object} connector Connector object
+   * @param  {string} url       Connector smart-notifier enabled endpoint
+   * @param  {string} channel   Name of the notification channel
+   * @param  {Array}  messages  Array of messages
+   * @param  {Array}  segments  Array of segments
+   * @return {superagent} SuperAgent instance
+   */
   smartNotifyConnector(connector, url, channel, messages, segments = []) {
     const body = {
       notification_id: this.fakeId(),
       configuration: {
         id: connector.id,
-        organization: this.getOrgAddr(),
+        organization: this._getOrgAddr(),
         secret: this.secret
       },
       connector,
@@ -131,17 +167,62 @@ class MiniHull extends MiniApplication {
   }
 
   /*
+   * --- High level stubs ---
+   */
+
+  /**
+   * Stubs MiniHull response on connector object
+   *
+   * @param  {Object} object Connector object
+   * @return {this}   MiniHull instance
+   */
+  stubConnector(object) {
+    this.stubApp(`/api/v1/${object.id}`).respond(object);
+    this.stubApp("/api/v1/app").respond(object);
+    return this;
+  }
+
+  /**
+   * Stubs MiniHull response to segments endpoint
+   *
+   * @param  {Array} segments array of segments
+   * @return {this}  MiniHull instance
+   */
+  stubSegments(segments) {
+    this.stubApp("get", "/api/v1/segments").respond(segments);
+    return this;
+  }
+
+  /**
+   * Stub batch endpoint
+   *
+   * @param  {Array} objects Array of user objects
+   * @return {this}  MiniHull instance
+   */
+  stubBatch(objects) {
+    this.stubApp("get", "/_batch").respond(objects.map(o => JSON.stringify(o)).join("\n"));
+    return this;
+  }
+
+
+  /*
    * --- Fake methods ---
    */
 
+   /**
+    * Generates fake ident used by MiniHull for connectors, users, segments
+    *
+    * @return {string} generated fake id
+    */
   fakeId() {
-    return crypto.randomBytes(12).toString('hex');
+    return crypto.randomBytes(12).toString("hex");
   }
 
   /**
    * Fakes basic user objects
-   * @param  {Number} count
-   * @return {Object}
+   *
+   * @param  {number} count Number of users to generate
+   * @return {Array} Returns generated users
    */
   fakeUsers(count) {
     for (var i = 0; i < count; i++) {
@@ -157,8 +238,9 @@ class MiniHull extends MiniApplication {
 
   /**
    * Fake some segments
-   * @param  {Number} count
-   * @return {Object}
+   *
+   * @param  {number} count Number of segments to generate
+   * @return {Array} Returns generated segments
    */
   fakeSegments(count) {
     const segments = ["Signed up", "Installed yesterday", "Prospects", "Leads", "Active", "Deals", "Demo requests", "Qualified Leads"];
@@ -174,6 +256,8 @@ class MiniHull extends MiniApplication {
 
   /**
    * Radomly assing existing users to existing segments
+   *
+   * @return {Array} users array
    */
   fakeAssignment() {
     return this.db.get("users")
@@ -191,8 +275,9 @@ class MiniHull extends MiniApplication {
 
   /**
    * Mimic the connector installation process
-   * @param  {String} connectorUrl
-   * @return {Promise}
+   *
+   * @param  {string} connectorUrl Connector url to install from
+   * @return {Promise}             Request promise
    */
   mimicInstall(connectorUrl) {
     return this.get(`${connectorUrl}/manifest.json`)
@@ -209,9 +294,10 @@ class MiniHull extends MiniApplication {
   }
 
   /**
-   * For interactive usage
-   * @param  {String} connectorId
-   * @return {[type]}        [description]
+   * Opens a url to connector dashboard
+   *
+   * @param  {string} connectorId Optional connector id
+   * @return {Object}             ShellJs response
    */
   mimicDashboard(connectorId) {
     const connector = connectorId
@@ -228,9 +314,9 @@ class MiniHull extends MiniApplication {
   /**
    * Performs post call to the selected connector. If no connectorId is passed performs the call to the first installed.
    *
-   * @param  {String} url
-   * @param  {String} connectorId
-   * @return {Request}
+   * @param  {string} url         Connector endpoint url
+   * @param  {string} connectorId Optional connector id
+   * @return {Request}            Request promise
    */
   mimicPostConnector(url, connectorId) {
     const connector = connectorId
@@ -243,9 +329,9 @@ class MiniHull extends MiniApplication {
   /**
    * Sends a notification to all installed connectors using the information from manifest.
    *
-   * @param  {String} topic
-   * @param  {Object} message
-   * @return {Promise}
+   * @param  {string} topic   Notification topic
+   * @param  {Object} message Notification message
+   * @return {Promise}        Request promise
    */
   mimicSendNotification(topic, message) {
     return Promise.all(this.db.get("connectors").reduce((acc, connector) => {
@@ -259,9 +345,10 @@ class MiniHull extends MiniApplication {
   }
 
   /**
-   * creates
-   * @param  {[type]} ident [description]
-   * @return {[type]}       [description]
+   * Creates a UserReport object for selected user
+   *
+   * @param  {Object} ident Object to indentify user we want to sent (passed to lodash `find` function)
+   * @return {Object}       Built `UserReport`
    */
   mimicUserReport(ident) {
     const user = this.get("users").find(ident).value();
@@ -269,6 +356,14 @@ class MiniHull extends MiniApplication {
     return { user, segments, changes: {}, events: [] };
   }
 
+  /**
+   * Mimics a user enter segment event which will be sent using `mimicSendNotification` method.
+   * Alters internal db.
+   *
+   * @param  {Object} ident     Object to indentify user we want to sent (passed to lodash `find` function)
+   * @param  {string} segmentId Id of the segment user should "enter"
+   * @return {Promise}          Request promise
+   */
   mimicUserEntersSegment(ident, segmentId) {
     const user = this._findUser(ident);
     user._segment_ids = _.uniq((user._segment_ids || []).concat(segmentId));
@@ -281,6 +376,14 @@ class MiniHull extends MiniApplication {
     return this.mimicSendNotification("user_report:update", { user, segments, changes, events: []});
   }
 
+  /**
+   * Mimics a user left segment event which will be sent using `mimicSendNotification` method.
+   * Alters internal db.
+   *
+   * @param  {Object} ident     Object to indentify user we want to sent (passed to lodash `find` function)
+   * @param  {string} segmentId Id of the segment user should leave
+   * @return {Promise}          Request promise
+   */
   mimicUserExitsSegment(ident, segmentId) {
     const user = this._findUser(ident);
     _.remove(user._segment_ids, (sId) => sId == segmentId);
@@ -293,6 +396,14 @@ class MiniHull extends MiniApplication {
     return this.mimicSendNotification("user_report:update", { user, segments, changes, events: []});
   }
 
+  /**
+   * Mimics an user:update event which will be sent using `mimicSendNotification` method.
+   * Alters internal db.
+   *
+   * @param  {Object} ident  Object to indentify user we want to sent (passed to lodash `find` function)
+   * @param  {Object} traits Target traits values
+   * @return {Promise}       Request promise
+   */
   mimicUpdateUser(ident, traits) {
     const user = this._findUser(ident);
     const changes = this._diff(user, traits);
@@ -301,6 +412,13 @@ class MiniHull extends MiniApplication {
     return this.mimicSendNotification("user_report:update", { user, segments, changes, events: []});
   }
 
+  /**
+   * Mimics connector private settings update event
+   *
+   * @param  {Object} settings    New connector private settings
+   * @param  {string} connectorId Optional connector id
+   * @return {Promise}            Request promise
+   */
   mimicUpdateConnector(settings, connectorId) {
     const connector = connectorId
       ? this.db.get("connectors").find({ id: connectorId }).value()
@@ -309,6 +427,13 @@ class MiniHull extends MiniApplication {
     return this.mimicSendNotification("ship:update", connector);
   }
 
+  /**
+   * Mimics an event when segment was altered.
+   *
+   * @param  {string} segmentName Segment name to sent
+   * @param  {string} segmentId   Optional segment id
+   * @return {Promise}            Request promise
+   */
   mimicUpdateSegment(segmentName, segmentId) {
     const segment = segmentId
       ? this.db.get("segments").find({ id: segmentId }).value()
@@ -317,6 +442,12 @@ class MiniHull extends MiniApplication {
     return this.mimicSendNotification("segment:update", segment);
   }
 
+  /**
+   * Mimics a batch call to the connector
+   *
+   * @param  {string} connectorId Optional connector id
+   * @return {Promise}            Request promise
+   */
   mimicBatchCall(connectorId) {
     const connector = connectorId
       ? this.db.get("connectors").find({ id: connectorId }).value()
@@ -324,10 +455,19 @@ class MiniHull extends MiniApplication {
     return this.batchConnector(connector.id, `${connector._url}/batch`);
   }
 
-  // --- Utilities methods ---
+  /*
+   * --- Utilities methods ---
+   */
+
+  _getOrgAddr() {
+    if (this.overrideOrgAddr) {
+      return this.overrideOrgAddr;
+    }
+    return `${this.hostname}:${this.port}`;
+  }
 
   _getConnectorUrl(connector, url) {
-    return `${connector._url}${url}?ship=${connector.id}&organization=${this.getOrgAddr()}&secret=${this.secret}`
+    return `${connector._url}${url}?ship=${connector.id}&organization=${this._getOrgAddr()}&secret=${this.secret}`
   }
 
   _diff(objectA, objectB) {

@@ -185,11 +185,34 @@ class MiniHull extends MiniApplication {
   /**
    * Stubs MiniHull response to segments endpoint
    *
+   * @deprecated use stubUsersSegments
    * @param  {Array} segments array of segments
    * @return {this}  MiniHull instance
    */
   stubSegments(segments) {
+    return this.stubUsersSegments(segments);
+  }
+
+  /**
+   * Stubs MiniHull response to users segments endpoint
+   *
+   * @param  {Array} segments array of segments
+   * @return {this}  MiniHull instance
+   */
+  stubUsersSegments(segments) {
     this.stubApp("get", "/api/v1/segments").respond(segments);
+    this.stubApp("get", "/api/v1/users_segments").respond(segments);
+    return this;
+  }
+
+  /**
+   * Stubs MiniHull response to accounts segments endpoint
+   *
+   * @param  {Array} segments array of segments
+   * @return {this}  MiniHull instance
+   */
+  stubAccountsSegments(segments) {
+    this.stubApp("get", "/api/v1/accounts_segments").respond(segments);
     return this;
   }
 

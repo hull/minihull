@@ -91,7 +91,7 @@ class MiniHull extends MiniApplication {
    * remember to call `.then` to peform actual call.
    *
    * @public
-   * @param  {string} id  Connector id
+   * @param  {object} connector  Connector object
    * @param  {string} url Connector url (including path to the endpoint)
    * @return {superagent} SuperAgent instance
    */
@@ -113,7 +113,7 @@ class MiniHull extends MiniApplication {
    * Performs a special POST operation to the connector url
    *
    * @public
-   * @param  {string} id  Connector id
+   * @param  {object} connector  Connector object
    * @param  {string} url Connector url to batch endpoint
    * @return {superagent} SuperAgent instance
    */
@@ -132,7 +132,7 @@ class MiniHull extends MiniApplication {
    * Performs a special POST operation to the connector url
    *
    * @public
-   * @param  {string} id  Connector id
+   * @param  {object} connector  Connector object
    * @param  {string} url Connector url to batch endpoint
    * @return {superagent} SuperAgent instance
    */
@@ -154,7 +154,8 @@ class MiniHull extends MiniApplication {
    * @param  {string} url       Connector smart-notifier enabled endpoint
    * @param  {string} channel   Name of the notification channel
    * @param  {Array}  messages  Array of messages
-   * @param  {Array}  segments  Array of segments
+   * @param  {Array}  usersSegments  Array of segments
+   * @param  {Array}  accountsSegments  Array of segments
    * @return {superagent} SuperAgent instance
    */
   notifyConnector(connector, url, channel, messages, usersSegments = [], accountsSegments = []) {
@@ -439,8 +440,8 @@ class MiniHull extends MiniApplication {
   /**
    * Sends a notification to all installed connectors using the information from manifest.
    *
-   * @param  {string} topic   Notification topic
-   * @param  {Object} message Notification message
+   * @param  {string} channel   Notification topic
+   * @param  {Array} messages Notification message
    * @return {Promise}        Request promise
    */
   mimicSendNotification(channel, messages) {

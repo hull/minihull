@@ -44,12 +44,16 @@ class MiniHull extends MiniApplication {
     // setup the internal db
     lodashId.createId = () => this.fakeId();
     this.db._.mixin(lodashId);
-    this.db.defaults({ connectors: [], users: [], segments: [] }).write();
+    this.db.defaults({ connectors: [], users: [], users_segments: [], accounts_segments: [], accounts: [] }).write();
 
     // setup the express application
     this.app.use("/api/v1/", minihullRouter(this));
-    this.app.get("/_batch", (req, res) => {
-      res.end(this._getBatchBody());
+    this.app.get("/_users_batch", (req, res) => {
+      res.end(this._getUsersBatchBody());
+    });
+
+    this.app.get("/_accounts_batch", (req, res) => {
+      res.end(this._getAccountsBatchBody());
     });
   }
 
@@ -61,8 +65,12 @@ class MiniHull extends MiniApplication {
     return this.db.get("users");
   }
 
-  segments() {
-    return this.db.get("segments");
+  usersSegments() {
+    return this.db.get("users_segments");
+  }
+
+  accountsSegments() {
+    return this.db.get("accounts_segments");
   }
 
   connectors() {
@@ -87,13 +95,18 @@ class MiniHull extends MiniApplication {
    * @param  {string} url Connector url (including path to the endpoint)
    * @return {superagent} SuperAgent instance
    */
-  postConnector(id, url) {
+  postConnector(connector, url, usersSegments = [], accountsSegments = []) {
     return this.post(url)
       .query({
         organization: this._getOrgAddr(),
-        ship: id,
+        ship: connector.id,
         secret: this.secret
-      });
+      })
+      .send({
+        connector,
+        users_segments: usersSegments,
+        accounts_segments: accountsSegments
+      })
   }
 
   /**
@@ -104,35 +117,33 @@ class MiniHull extends MiniApplication {
    * @param  {string} url Connector url to batch endpoint
    * @return {superagent} SuperAgent instance
    */
-  batchConnector(id, url) {
-    return this.postConnector(id, url)
+  batchUsersConnector(connector, url, usersSegments = [], accountsSegments = []) {
+    return this.postConnector(connector, url, usersSegments, accountsSegments)
       .send({
-        url: `http://${this._getOrgAddr()}/_batch`,
-        format: "json"
+        connector,
+        url: `http://${this._getOrgAddr()}/_users_batch`,
+        format: "json",
+        object_type: "user"
       })
       .then((res) => res);
   }
 
   /**
-   * Performs a SNS notification to selected connector
+   * Performs a special POST operation to the connector url
    *
-   * @param  {string} id      Connector id
-   * @param  {string} url     Connector url to notify endpoint
-   * @param  {string} topic   Notification topic
-   * @param  {Object} message Notification message
+   * @public
+   * @param  {string} id  Connector id
+   * @param  {string} url Connector url to batch endpoint
    * @return {superagent} SuperAgent instance
    */
-  notifyConnector(id, url, topic, message) {
-    const body = {
-      Type: "Notification",
-      Timestamp: new Date(),
-      Subject: topic,
-      Message: JSON.stringify(message)
-    };
-
-    return this.postConnector(id, url)
-      .set("x-amz-sns-message-type", "dummy")
-      .send(body)
+  batchAccountsConnector(connector, url, usersSegments = [], accountsSegments = []) {
+    return this.postConnector(connector, url, usersSegments, accountsSegments)
+      .send({
+        connector,
+        url: `http://${this._getOrgAddr()}/_accounts_batch`,
+        format: "json",
+        object_type: "account"
+      })
       .then((res) => res);
   }
 
@@ -146,7 +157,7 @@ class MiniHull extends MiniApplication {
    * @param  {Array}  segments  Array of segments
    * @return {superagent} SuperAgent instance
    */
-  smartNotifyConnector(connector, url, channel, messages, segments = []) {
+  notifyConnector(connector, url, channel, messages, usersSegments = [], accountsSegments = []) {
     const body = {
       notification_id: this.fakeId(),
       configuration: {
@@ -155,7 +166,8 @@ class MiniHull extends MiniApplication {
         secret: this.secret
       },
       connector,
-      segments,
+      users_segments: usersSegments,
+      accounts_segments: accountsSegments,
       channel,
       messages
     };
@@ -183,24 +195,12 @@ class MiniHull extends MiniApplication {
   }
 
   /**
-   * Stubs MiniHull response to segments endpoint
-   *
-   * @deprecated use stubUsersSegments
-   * @param  {Array} segments array of segments
-   * @return {this}  MiniHull instance
-   */
-  stubSegments(segments) {
-    return this.stubUsersSegments(segments);
-  }
-
-  /**
    * Stubs MiniHull response to users segments endpoint
    *
    * @param  {Array} segments array of segments
    * @return {this}  MiniHull instance
    */
   stubUsersSegments(segments) {
-    this.stubApp("get", "/api/v1/segments").respond(segments);
     this.stubApp("get", "/api/v1/users_segments").respond(segments);
     return this;
   }
@@ -222,8 +222,19 @@ class MiniHull extends MiniApplication {
    * @param  {Array} objects Array of user objects
    * @return {this}  MiniHull instance
    */
-  stubBatch(objects) {
-    this.stubApp("get", "/_batch").respond(objects.map(o => JSON.stringify(o)).join("\n"));
+  stubUsersBatch(objects) {
+    this.stubApp("get", "/_users_batch").respond(objects.map(o => JSON.stringify(o)).join("\n"));
+    return this;
+  }
+
+  /**
+   * Stub batch endpoint
+   *
+   * @param  {Array} objects Array of user objects
+   * @return {this}  MiniHull instance
+   */
+  stubAccountsBatch(objects) {
+    this.stubApp("get", "/_accounts_batch").respond(objects.map(o => JSON.stringify(o)).join("\n"));
     return this;
   }
 
@@ -260,21 +271,56 @@ class MiniHull extends MiniApplication {
   }
 
   /**
-   * Fake some segments
+   * Fakes basic user objects
+   *
+   * @param  {number} count Number of users to generate
+   * @return {Array} Returns generated users
+   */
+  fakeAccounts(count) {
+    for (var i = 0; i < count; i++) {
+      this.db.get("accounts").insert({
+        domain: faker.internet.domainName(),
+        name: faker.company.companyName(),
+        updated_at: faker.date.recent()
+      }).write();
+    }
+    return this.db.get("accounts").value();
+  }
+
+  /**
+   * Fake some users segments
    *
    * @param  {number} count Number of segments to generate
    * @return {Array} Returns generated segments
    */
-  fakeSegments(count) {
+  fakeUsersSegments(count) {
     const segments = ["Signed up", "Installed yesterday", "Prospects", "Leads", "Active", "Deals", "Demo requests", "Qualified Leads"];
     for (var i = 0; i < count; i++) {
-      this.db.get("segments").insert({
+      this.db.get("users_segments").insert({
         name: segments[Math.floor(Math.random() * segments.length)],
         created_at: faker.date.recent(),
         updated_at: faker.date.recent()
       }).write();
     }
-    return this.db.get("segments").value();
+    return this.db.get("users_segments").value();
+  }
+
+  /**
+   * Fake some accounts segments
+   *
+   * @param  {number} count Number of segments to generate
+   * @return {Array} Returns generated segments
+   */
+  fakeAccountsSegments(count) {
+    const segments = ["Big companies", "Small companies", "Medium companies", "SaaS companies", "Customers"];
+    for (var i = 0; i < count; i++) {
+      this.db.get("accounts_segments").insert({
+        name: segments[Math.floor(Math.random() * segments.length)],
+        created_at: faker.date.recent(),
+        updated_at: faker.date.recent()
+      }).write();
+    }
+    return this.db.get("accounts_segments").value();
   }
 
   /**
@@ -282,16 +328,57 @@ class MiniHull extends MiniApplication {
    *
    * @return {Array} users array
    */
-  fakeAssignment() {
+  fakeUsersSegmentsAssignment() {
     return this.db.get("users")
       .map((user) => {
-        const count = faker.random.number({ max: this.db.get("segments").size() })
+        const count = faker.random.number({ max: this.db.get("users_segments").size() })
         for (var i = 0; i < count; i++) {
           user._segment_ids = _.uniq((user._segment_ids || [])
-            .concat(faker.random.arrayElement(this.db.get("segments").value()).id));
+            .concat(faker.random.arrayElement(this.db.get("users_segments").value()).id));
         }
         return user;
       }).write();
+  }
+
+  /**
+   * Radomly assing existing users to existing segments
+   *
+   * @return {Array} users array
+   */
+  fakeAccountSegmentsAssignment() {
+    return this.db.get("accounts")
+      .map((account) => {
+        const count = faker.random.number({ max: this.db.get("accounts_segments").size() })
+        for (var i = 0; i < count; i++) {
+          account._segment_ids = _.uniq((account._segment_ids || [])
+            .concat(faker.random.arrayElement(this.db.get("accounts_segments").value()).id));
+        }
+        return account;
+      }).write();
+  }
+
+  /**
+   * Radomly assing existing users to existing segments
+   *
+   * @return {Array} users array
+   */
+  fakeUserAccountAssignment() {
+    return this.db.get("users")
+      .map((user) => {
+        user._account_id = faker.random.arrayElement(this.db.get("accounts").value()).id;
+        return user;
+      }).write();
+  }
+
+  fakeAll(usersCount = 10, accountsCount = 3, usersSegmentsCount = 5, accountsSegmentsCount = 2) {
+    this.fakeUsers(usersCount);
+    this.fakeAccounts(accountsCount);
+    this.fakeUserAccountAssignment();
+    this.fakeUsersSegments(usersSegmentsCount);
+    this.fakeUsersSegmentsAssignment();
+    this.fakeAccountsSegments(accountsSegmentsCount);
+    this.fakeAccountSegmentsAssignment();
+    return this.db.get("users").value();
   }
 
   // --- Mimic methods ---
@@ -312,7 +399,7 @@ class MiniHull extends MiniApplication {
         }).write();
       })
       .then((connector) => {
-        return this.mimicSendNotification("ship:update", connector);
+        return this.mimicSendNotification("ship:update", [connector]);
       });
   }
 
@@ -346,7 +433,7 @@ class MiniHull extends MiniApplication {
       ? this.db.get("connectors").find({ id: connectorId }).value()
       : this.db.get("connectors").get(0).value();
 
-    return this.postConnector(connector.id, connector._url);
+    return this.postConnector(connector, connector._url);
   }
 
   /**
@@ -356,11 +443,11 @@ class MiniHull extends MiniApplication {
    * @param  {Object} message Notification message
    * @return {Promise}        Request promise
    */
-  mimicSendNotification(topic, message) {
+  mimicSendNotification(channel, messages) {
     return Promise.all(this.db.get("connectors").reduce((acc, connector) => {
       _.map(connector.manifest.subscriptions, subscription => {
         acc.push(
-          this.notifyConnector(connector.id, `${connector._url}${subscription.url}`, topic, message)
+          this.notifyConnector(connector, `${connector._url}${subscription.url}`, channel, messages, this.db.get("users_segments"), this.db.get("accounts_segments"))
         );
       });
       return acc;
@@ -374,9 +461,11 @@ class MiniHull extends MiniApplication {
    * @return {Object}       Built `UserReport`
    */
   mimicUserReport(ident) {
-    const user = this.get("users").find(ident).value();
-    const segments = this._getMatchingSegments(user).value();
-    return { user, segments, changes: {}, events: [] };
+    const user = this.db.get("users").find(ident).value();
+    const userSegments = this._getMatchingUsersSegments(user).value();
+    const account = this.db.get("accounts").find({ id: user._account_id }).value();
+    const accountSegments = account._segment_ids ? this._getMatchingAccountsSegments(account).value() : [];
+    return { user, user_segments: userSegments, account, account_segments: accountSegments, changes: {}, events: [] };
   }
 
   /**
@@ -390,13 +479,13 @@ class MiniHull extends MiniApplication {
   mimicUserEntersSegment(ident, segmentId) {
     const user = this._findUser(ident);
     user._segment_ids = _.uniq((user._segment_ids || []).concat(segmentId));
-    const segments = this._getMatchingSegments(user).value();
+    const segments = this._getMatchingUsersSegments(user).value();
     const changes = {
       segments: {
         enter: this.segments().filter({ id: segmentId }).value()
       }
     };
-    return this.mimicSendNotification("user_report:update", { user, segments, changes, events: []});
+    return this.mimicSendNotification("user:update", [{ user, segments, changes, events: []}]);
   }
 
   /**
@@ -410,13 +499,13 @@ class MiniHull extends MiniApplication {
   mimicUserExitsSegment(ident, segmentId) {
     const user = this._findUser(ident);
     _.remove(user._segment_ids, (sId) => sId == segmentId);
-    const segments = this._getMatchingSegments(user).value();
+    const segments = this._getMatchingUsersSegments(user).value();
     const changes = {
       segments: {
         left: this.segments().filter({ id: segmentId }).value()
       }
     };
-    return this.mimicSendNotification("user_report:update", { user, segments, changes, events: []});
+    return this.mimicSendNotification("user:update", [{ user, segments, changes, events: []}]);
   }
 
   /**
@@ -431,8 +520,8 @@ class MiniHull extends MiniApplication {
     const user = this._findUser(ident);
     const changes = this._diff(user, traits);
     _.merge(user, traits);
-    const segments = this._getMatchingSegments(user).value();
-    return this.mimicSendNotification("user_report:update", { user, segments, changes, events: []});
+    const segments = this._getMatchingUsersSegments(user).value();
+    return this.mimicSendNotification("user:update", [{ user, segments, changes, events: []}]);
   }
 
   /**
@@ -447,7 +536,7 @@ class MiniHull extends MiniApplication {
       ? this.db.get("connectors").find({ id: connectorId }).value()
       : this.db.get("connectors").get(0).value();
     connector.private_settings = _.merge(connector.private_settings || {}, settings);
-    return this.mimicSendNotification("ship:update", connector);
+    return this.mimicSendNotification("ship:update", [connector]);
   }
 
   /**
@@ -457,12 +546,12 @@ class MiniHull extends MiniApplication {
    * @param  {string} segmentId   Optional segment id
    * @return {Promise}            Request promise
    */
-  mimicUpdateSegment(segmentName, segmentId) {
+  mimicUpdateUserSegment(segmentName, segmentId) {
     const segment = segmentId
-      ? this.db.get("segments").find({ id: segmentId }).value()
-      : this.db.get("segments").get(0).value();
+      ? this.db.get("users_segments").find({ id: segmentId }).value()
+      : this.db.get("users_segments").get(0).value();
     segment.name = segmentName;
-    return this.mimicSendNotification("segment:update", segment);
+    return this.mimicSendNotification("segment:update", [segment]);
   }
 
   /**
@@ -471,11 +560,11 @@ class MiniHull extends MiniApplication {
    * @param  {string} connectorId Optional connector id
    * @return {Promise}            Request promise
    */
-  mimicBatchCall(connectorId) {
+  mimicUsersBatchCall(connectorId) {
     const connector = connectorId
       ? this.db.get("connectors").find({ id: connectorId }).value()
       : this.db.get("connectors").get(0).value();
-    return this.batchConnector(connector.id, `${connector._url}/batch`);
+    return this.batchUsersConnector(connector, `${connector._url}/batch`, "user", this.db.get("users_segments"), this.db.get("accounts_segments"));
   }
 
   /*
@@ -505,21 +594,40 @@ class MiniHull extends MiniApplication {
     return diff;
   }
 
-  _getMatchingSegments(user) {
+  _getMatchingUsersSegments(user) {
     if (!user._segment_ids) {
       user = this._findUser(user);
     }
-    const matchingSegments = this.db.get("segments")
+    const matchingSegments = this.db.get("users_segments")
       .intersectionBy((user._segment_ids || []).map(id => ({ id })), "id");
     return matchingSegments;
   }
 
-  _getBatchBody() {
+  _getMatchingAccountsSegments(account) {
+    if (!account._segment_ids) {
+      account = this._findAccount(account);
+    }
+    console.log("_getMatchingAccountsSegments", account);
+    const matchingSegments = this.db.get("accounts_segments")
+      .intersectionBy((account._segment_ids || []).map(id => ({ id })), "id");
+    return matchingSegments;
+  }
+
+  _getUsersBatchBody() {
     const users = this.db.get("users").cloneDeep();
     return users.value().map(u => {
       u.segments_id = u._segment_ids;
       delete u._segment_ids;
       return JSON.stringify(u);
+    }).join("\n");
+  }
+
+  _getAccountsBatchBody() {
+    const accounts = this.db.get("accounts").cloneDeep();
+    return accounts.value().map(a => {
+      a.segments_id = a._segment_ids;
+      delete a._segment_ids;
+      return JSON.stringify(a);
     }).join("\n");
   }
 

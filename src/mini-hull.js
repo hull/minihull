@@ -91,7 +91,7 @@ class MiniHull extends MiniApplication {
    * remember to call `.then` to peform actual call.
    *
    * @public
-   * @param  {object} connector  Connector object
+   * @param  {Object} connector  Connector object
    * @param  {string} url Connector url (including path to the endpoint)
    * @return {superagent} SuperAgent instance
    */
@@ -113,7 +113,7 @@ class MiniHull extends MiniApplication {
    * Performs a special POST operation to the connector url
    *
    * @public
-   * @param  {object} connector  Connector object
+   * @param  {Object} connector  Connector object
    * @param  {string} url Connector url to batch endpoint
    * @return {superagent} SuperAgent instance
    */
@@ -132,7 +132,7 @@ class MiniHull extends MiniApplication {
    * Performs a special POST operation to the connector url
    *
    * @public
-   * @param  {object} connector  Connector object
+   * @param  {Object} connector  Connector object
    * @param  {string} url Connector url to batch endpoint
    * @return {superagent} SuperAgent instance
    */

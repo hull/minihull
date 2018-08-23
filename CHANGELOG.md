@@ -1,3 +1,7 @@
+# v3.0.1
+- add helpful errors to notify when using deprecated signatures and methods
+- update documentation
+
 # v3.0.0
 - added basic accounts support
 - `notifConnector` method now always use smart-notifier/kraken format

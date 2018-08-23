@@ -2,19 +2,19 @@
 <html>
 <head>
   <meta charset='utf-8' />
-  <title>minihull 2.1.2 | Documentation</title>
+  <title>minihull 3.0.1 | Documentation</title>
   <meta name='viewport' content='width=device-width,initial-scale=1'>
   <link href='assets/bass.css' type='text/css' rel='stylesheet' />
   <link href='assets/style.css' type='text/css' rel='stylesheet' />
   <link href='assets/github.css' type='text/css' rel='stylesheet' />
+  <link href='assets/split.css' type='text/css' rel='stylesheet' />
 </head>
-<body class='documentation'>
-  <div class='max-width-4 mx-auto'>
-    <div class='clearfix md-mxn2'>
-      <div class='fixed xs-hide fix-3 overflow-auto max-height-100'>
+<body class='documentation m0'>
+    <div class='flex'>
+      <div id='split-left' class='overflow-auto fs0 height-viewport-100'>
         <div class='py1 px2'>
           <h3 class='mb0 no-anchor'>minihull</h3>
-          <div class='mb1'><code>2.1.2</code></div>
+          <div class='mb1'><code>3.0.1</code></div>
           <input
             placeholder='Filter'
             id='filter-input'
@@ -44,9 +44,15 @@
                       </a></li>
                       
                       <li><a
-                        href='#minihullbatchconnector'
+                        href='#minihullbatchusersconnector'
                         class='regular pre-open'>
-                        #batchConnector
+                        #batchUsersConnector
+                      </a></li>
+                      
+                      <li><a
+                        href='#minihullbatchaccountsconnector'
+                        class='regular pre-open'>
+                        #batchAccountsConnector
                       </a></li>
                       
                       <li><a
@@ -56,21 +62,9 @@
                       </a></li>
                       
                       <li><a
-                        href='#minihullsmartnotifyconnector'
-                        class='regular pre-open'>
-                        #smartNotifyConnector
-                      </a></li>
-                      
-                      <li><a
                         href='#minihullstubconnector'
                         class='regular pre-open'>
                         #stubConnector
-                      </a></li>
-                      
-                      <li><a
-                        href='#minihullstubsegments'
-                        class='regular pre-open'>
-                        #stubSegments
                       </a></li>
                       
                       <li><a
@@ -86,9 +80,15 @@
                       </a></li>
                       
                       <li><a
-                        href='#minihullstubbatch'
+                        href='#minihullstubusersbatch'
                         class='regular pre-open'>
-                        #stubBatch
+                        #stubUsersBatch
+                      </a></li>
+                      
+                      <li><a
+                        href='#minihullstubaccountsbatch'
+                        class='regular pre-open'>
+                        #stubAccountsBatch
                       </a></li>
                       
                       <li><a
@@ -104,15 +104,39 @@
                       </a></li>
                       
                       <li><a
-                        href='#minihullfakesegments'
+                        href='#minihullfakeaccounts'
                         class='regular pre-open'>
-                        #fakeSegments
+                        #fakeAccounts
                       </a></li>
                       
                       <li><a
-                        href='#minihullfakeassignment'
+                        href='#minihullfakeuserssegments'
                         class='regular pre-open'>
-                        #fakeAssignment
+                        #fakeUsersSegments
+                      </a></li>
+                      
+                      <li><a
+                        href='#minihullfakeaccountssegments'
+                        class='regular pre-open'>
+                        #fakeAccountsSegments
+                      </a></li>
+                      
+                      <li><a
+                        href='#minihullfakeuserssegmentsassignment'
+                        class='regular pre-open'>
+                        #fakeUsersSegmentsAssignment
+                      </a></li>
+                      
+                      <li><a
+                        href='#minihullfakeaccountsegmentsassignment'
+                        class='regular pre-open'>
+                        #fakeAccountSegmentsAssignment
+                      </a></li>
+                      
+                      <li><a
+                        href='#minihullfakeuseraccountassignment'
+                        class='regular pre-open'>
+                        #fakeUserAccountAssignment
                       </a></li>
                       
                       <li><a
@@ -170,15 +194,15 @@
                       </a></li>
                       
                       <li><a
-                        href='#minihullmimicupdatesegment'
+                        href='#minihullmimicupdateusersegment'
                         class='regular pre-open'>
-                        #mimicUpdateSegment
+                        #mimicUpdateUserSegment
                       </a></li>
                       
                       <li><a
-                        href='#minihullmimicbatchcall'
+                        href='#minihullmimicusersbatchcall'
                         class='regular pre-open'>
-                        #mimicBatchCall
+                        #mimicUsersBatchCall
                       </a></li>
                       
                     </ul>
@@ -206,7 +230,7 @@
           </div>
         </div>
       </div>
-      <div class='fix-margin-3'>
+      <div id='split-right' class='relative overflow-auto height-viewport-100'>
         
           
             <section class='p2 mb2 clearfix bg-white minishadow'>
@@ -247,7 +271,7 @@ To make the data seeding easier <code>fake*</code> methods provide an easy way o
 <p><em>Note:</em> Underscore methods <code>_*</code> are internal utilities and are not part of the public API of the library. Use with caution.</p>
 
 
-  <div class='pre p1 fill-light mt0'>new MiniHull(options: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a>)</div>
+  <div class='pre p1 fill-light mt0'>new MiniHull(options: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a>)</div>
   
   
     <p>
@@ -271,7 +295,7 @@ To make the data seeding easier <code>fake*</code> methods provide an easy way o
       
         <div class='space-bottom0'>
           <div>
-            <span class='code bold'>options</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a>
+            <span class='code bold'>options</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a>
             = <code>{}</code>)</code>
 	    setup options
 
@@ -291,13 +315,15 @@ To make the data seeding easier <code>fake*</code> methods provide an easy way o
             <tbody class='mt1'>
               
                 <tr>
-                  <td class='break-word'><span class='code bold'>options.secret</span> <code class='quiet'><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a></code>
-                  </td>
-                  <td class='break-word'><span>secret used to sign requests to all installed connector instances (see 
+  <td class='break-word'><span class='code bold'>options.secret</span> <code class='quiet'><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a></code>
+  </td>
+  <td class='break-word'><span>secret used to sign requests to all installed connector instances (see 
 <code>mimicInstall</code>
  method)
 </span></td>
-                </tr>
+</tr>
+
+
               
             </tbody>
           </table>
@@ -325,7 +351,7 @@ To make the data seeding easier <code>fake*</code> methods provide an easy way o
       <div class="clearfix small pointer toggle-sibling">
         <div class="py1 contain">
             <a class='icon pin-right py1 dark-link caret-right'>▸</a>
-            <span class='code strong strong truncate'>postConnector(id, url)</span>
+            <span class='code strong strong truncate'>postConnector(connector, url, usersSegments, accountsSegments)</span>
         </div>
       </div>
       <div class="clearfix display-none toggle-target">
@@ -338,7 +364,7 @@ Returns a <a href="https://github.com/visionmedia/superagent">SuperAgent</a> ins
 remember to call <code>.then</code> to peform actual call.</p>
 
 
-  <div class='pre p1 fill-light mt0'>postConnector(id: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>, url: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>): superagent</div>
+  <div class='pre p1 fill-light mt0'>postConnector(connector: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a>, url: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>, usersSegments: any, accountsSegments: any): superagent</div>
   
   
 
@@ -355,8 +381,8 @@ remember to call <code>.then</code> to peform actual call.</p>
       
         <div class='space-bottom0'>
           <div>
-            <span class='code bold'>id</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>)</code>
-	    Connector id
+            <span class='code bold'>connector</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a>)</code>
+	    Connector object
 
           </div>
           
@@ -364,9 +390,27 @@ remember to call <code>.then</code> to peform actual call.</p>
       
         <div class='space-bottom0'>
           <div>
-            <span class='code bold'>url</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>)</code>
+            <span class='code bold'>url</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>)</code>
 	    Connector url (including path to the endpoint)
 
+          </div>
+          
+        </div>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>usersSegments</span> <code class='quiet'>(any
+            = <code>[]</code>)</code>
+	    
+          </div>
+          
+        </div>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>accountsSegments</span> <code class='quiet'>(any
+            = <code>[]</code>)</code>
+	    
           </div>
           
         </div>
@@ -400,11 +444,11 @@ remember to call <code>.then</code> to peform actual call.</p>
       </div>
     </div>
   
-    <div class='border-bottom' id='minihullbatchconnector'>
+    <div class='border-bottom' id='minihullbatchusersconnector'>
       <div class="clearfix small pointer toggle-sibling">
         <div class="py1 contain">
             <a class='icon pin-right py1 dark-link caret-right'>▸</a>
-            <span class='code strong strong truncate'>batchConnector(id, url)</span>
+            <span class='code strong strong truncate'>batchUsersConnector(connector, url, usersSegments, accountsSegments)</span>
         </div>
       </div>
       <div class="clearfix display-none toggle-target">
@@ -415,7 +459,7 @@ remember to call <code>.then</code> to peform actual call.</p>
   <p>Performs a special POST operation to the connector url</p>
 
 
-  <div class='pre p1 fill-light mt0'>batchConnector(id: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>, url: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>): superagent</div>
+  <div class='pre p1 fill-light mt0'>batchUsersConnector(connector: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a>, url: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>, usersSegments: any, accountsSegments: any): superagent</div>
   
   
 
@@ -432,8 +476,8 @@ remember to call <code>.then</code> to peform actual call.</p>
       
         <div class='space-bottom0'>
           <div>
-            <span class='code bold'>id</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>)</code>
-	    Connector id
+            <span class='code bold'>connector</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a>)</code>
+	    Connector object
 
           </div>
           
@@ -441,9 +485,122 @@ remember to call <code>.then</code> to peform actual call.</p>
       
         <div class='space-bottom0'>
           <div>
-            <span class='code bold'>url</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>)</code>
+            <span class='code bold'>url</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>)</code>
 	    Connector url to batch endpoint
 
+          </div>
+          
+        </div>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>usersSegments</span> <code class='quiet'>(any
+            = <code>[]</code>)</code>
+	    
+          </div>
+          
+        </div>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>accountsSegments</span> <code class='quiet'>(any
+            = <code>[]</code>)</code>
+	    
+          </div>
+          
+        </div>
+      
+    </div>
+  
+
+  
+
+  
+    
+      <div class='py1 quiet mt1 prose-big'>Returns</div>
+      <code>superagent</code>:
+        SuperAgent instance
+
+      
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+</section>
+
+      </div>
+    </div>
+  
+    <div class='border-bottom' id='minihullbatchaccountsconnector'>
+      <div class="clearfix small pointer toggle-sibling">
+        <div class="py1 contain">
+            <a class='icon pin-right py1 dark-link caret-right'>▸</a>
+            <span class='code strong strong truncate'>batchAccountsConnector(connector, url, usersSegments, accountsSegments)</span>
+        </div>
+      </div>
+      <div class="clearfix display-none toggle-target">
+        <section class='p2 mb2 clearfix bg-white minishadow'>
+
+  
+
+  <p>Performs a special POST operation to the connector url</p>
+
+
+  <div class='pre p1 fill-light mt0'>batchAccountsConnector(connector: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a>, url: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>, usersSegments: any, accountsSegments: any): superagent</div>
+  
+  
+
+  
+  
+  
+  
+  
+  
+
+  
+    <div class='py1 quiet mt1 prose-big'>Parameters</div>
+    <div class='prose'>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>connector</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a>)</code>
+	    Connector object
+
+          </div>
+          
+        </div>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>url</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>)</code>
+	    Connector url to batch endpoint
+
+          </div>
+          
+        </div>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>usersSegments</span> <code class='quiet'>(any
+            = <code>[]</code>)</code>
+	    
+          </div>
+          
+        </div>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>accountsSegments</span> <code class='quiet'>(any
+            = <code>[]</code>)</code>
+	    
           </div>
           
         </div>
@@ -481,102 +638,7 @@ remember to call <code>.then</code> to peform actual call.</p>
       <div class="clearfix small pointer toggle-sibling">
         <div class="py1 contain">
             <a class='icon pin-right py1 dark-link caret-right'>▸</a>
-            <span class='code strong strong truncate'>notifyConnector(id, url, topic, message)</span>
-        </div>
-      </div>
-      <div class="clearfix display-none toggle-target">
-        <section class='p2 mb2 clearfix bg-white minishadow'>
-
-  
-
-  <p>Performs a SNS notification to selected connector</p>
-
-
-  <div class='pre p1 fill-light mt0'>notifyConnector(id: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>, url: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>, topic: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>, message: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a>): superagent</div>
-  
-  
-
-  
-  
-  
-  
-  
-  
-
-  
-    <div class='py1 quiet mt1 prose-big'>Parameters</div>
-    <div class='prose'>
-      
-        <div class='space-bottom0'>
-          <div>
-            <span class='code bold'>id</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>)</code>
-	    Connector id
-
-          </div>
-          
-        </div>
-      
-        <div class='space-bottom0'>
-          <div>
-            <span class='code bold'>url</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>)</code>
-	    Connector url to notify endpoint
-
-          </div>
-          
-        </div>
-      
-        <div class='space-bottom0'>
-          <div>
-            <span class='code bold'>topic</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>)</code>
-	    Notification topic
-
-          </div>
-          
-        </div>
-      
-        <div class='space-bottom0'>
-          <div>
-            <span class='code bold'>message</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a>)</code>
-	    Notification message
-
-          </div>
-          
-        </div>
-      
-    </div>
-  
-
-  
-
-  
-    
-      <div class='py1 quiet mt1 prose-big'>Returns</div>
-      <code>superagent</code>:
-        SuperAgent instance
-
-      
-    
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-</section>
-
-      </div>
-    </div>
-  
-    <div class='border-bottom' id='minihullsmartnotifyconnector'>
-      <div class="clearfix small pointer toggle-sibling">
-        <div class="py1 contain">
-            <a class='icon pin-right py1 dark-link caret-right'>▸</a>
-            <span class='code strong strong truncate'>smartNotifyConnector(connector, url, channel, messages, segments)</span>
+            <span class='code strong strong truncate'>notifyConnector(connector, url, channel, messages, usersSegments, accountsSegments)</span>
         </div>
       </div>
       <div class="clearfix display-none toggle-target">
@@ -587,7 +649,7 @@ remember to call <code>.then</code> to peform actual call.</p>
   <p>Performs a smart-notifier request to the connector</p>
 
 
-  <div class='pre p1 fill-light mt0'>smartNotifyConnector(connector: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a>, url: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>, channel: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>, messages: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>, segments: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>): superagent</div>
+  <div class='pre p1 fill-light mt0'>notifyConnector(connector: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a>, url: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>, channel: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>, messages: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>, usersSegments: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>, accountsSegments: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>): superagent</div>
   
   
 
@@ -604,7 +666,7 @@ remember to call <code>.then</code> to peform actual call.</p>
       
         <div class='space-bottom0'>
           <div>
-            <span class='code bold'>connector</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a>)</code>
+            <span class='code bold'>connector</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a>)</code>
 	    Connector object
 
           </div>
@@ -613,7 +675,7 @@ remember to call <code>.then</code> to peform actual call.</p>
       
         <div class='space-bottom0'>
           <div>
-            <span class='code bold'>url</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>)</code>
+            <span class='code bold'>url</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>)</code>
 	    Connector smart-notifier enabled endpoint
 
           </div>
@@ -622,7 +684,7 @@ remember to call <code>.then</code> to peform actual call.</p>
       
         <div class='space-bottom0'>
           <div>
-            <span class='code bold'>channel</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>)</code>
+            <span class='code bold'>channel</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>)</code>
 	    Name of the notification channel
 
           </div>
@@ -631,7 +693,7 @@ remember to call <code>.then</code> to peform actual call.</p>
       
         <div class='space-bottom0'>
           <div>
-            <span class='code bold'>messages</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>)</code>
+            <span class='code bold'>messages</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>)</code>
 	    Array of messages
 
           </div>
@@ -640,7 +702,17 @@ remember to call <code>.then</code> to peform actual call.</p>
       
         <div class='space-bottom0'>
           <div>
-            <span class='code bold'>segments</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>
+            <span class='code bold'>usersSegments</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>
+            = <code>[]</code>)</code>
+	    Array of segments
+
+          </div>
+          
+        </div>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>accountsSegments</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>
             = <code>[]</code>)</code>
 	    Array of segments
 
@@ -692,7 +764,7 @@ remember to call <code>.then</code> to peform actual call.</p>
   <p>Stubs MiniHull response on connector object</p>
 
 
-  <div class='pre p1 fill-light mt0'>stubConnector(object: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a>): this</div>
+  <div class='pre p1 fill-light mt0'>stubConnector(object: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a>): this</div>
   
   
 
@@ -709,77 +781,8 @@ remember to call <code>.then</code> to peform actual call.</p>
       
         <div class='space-bottom0'>
           <div>
-            <span class='code bold'>object</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a>)</code>
+            <span class='code bold'>object</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a>)</code>
 	    Connector object
-
-          </div>
-          
-        </div>
-      
-    </div>
-  
-
-  
-
-  
-    
-      <div class='py1 quiet mt1 prose-big'>Returns</div>
-      <code>this</code>:
-        MiniHull instance
-
-      
-    
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-</section>
-
-      </div>
-    </div>
-  
-    <div class='border-bottom' id='minihullstubsegments'>
-      <div class="clearfix small pointer toggle-sibling">
-        <div class="py1 contain">
-            <a class='icon pin-right py1 dark-link caret-right'>▸</a>
-            <span class='code strong strong truncate'>stubSegments(segments)</span>
-        </div>
-      </div>
-      <div class="clearfix display-none toggle-target">
-        <section class='p2 mb2 clearfix bg-white minishadow'>
-
-  
-
-  <p>Stubs MiniHull response to segments endpoint</p>
-
-
-  <div class='pre p1 fill-light mt0'>stubSegments(segments: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>): this</div>
-  
-  
-
-  <div>Deprecated: use stubUsersSegments
-</div>
-  
-  
-  
-  
-  
-
-  
-    <div class='py1 quiet mt1 prose-big'>Parameters</div>
-    <div class='prose'>
-      
-        <div class='space-bottom0'>
-          <div>
-            <span class='code bold'>segments</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>)</code>
-	    array of segments
 
           </div>
           
@@ -829,7 +832,7 @@ remember to call <code>.then</code> to peform actual call.</p>
   <p>Stubs MiniHull response to users segments endpoint</p>
 
 
-  <div class='pre p1 fill-light mt0'>stubUsersSegments(segments: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>): this</div>
+  <div class='pre p1 fill-light mt0'>stubUsersSegments(segments: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>): this</div>
   
   
 
@@ -846,7 +849,7 @@ remember to call <code>.then</code> to peform actual call.</p>
       
         <div class='space-bottom0'>
           <div>
-            <span class='code bold'>segments</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>)</code>
+            <span class='code bold'>segments</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>)</code>
 	    array of segments
 
           </div>
@@ -897,7 +900,7 @@ remember to call <code>.then</code> to peform actual call.</p>
   <p>Stubs MiniHull response to accounts segments endpoint</p>
 
 
-  <div class='pre p1 fill-light mt0'>stubAccountsSegments(segments: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>): this</div>
+  <div class='pre p1 fill-light mt0'>stubAccountsSegments(segments: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>): this</div>
   
   
 
@@ -914,7 +917,7 @@ remember to call <code>.then</code> to peform actual call.</p>
       
         <div class='space-bottom0'>
           <div>
-            <span class='code bold'>segments</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>)</code>
+            <span class='code bold'>segments</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>)</code>
 	    array of segments
 
           </div>
@@ -950,11 +953,11 @@ remember to call <code>.then</code> to peform actual call.</p>
       </div>
     </div>
   
-    <div class='border-bottom' id='minihullstubbatch'>
+    <div class='border-bottom' id='minihullstubusersbatch'>
       <div class="clearfix small pointer toggle-sibling">
         <div class="py1 contain">
             <a class='icon pin-right py1 dark-link caret-right'>▸</a>
-            <span class='code strong strong truncate'>stubBatch(objects)</span>
+            <span class='code strong strong truncate'>stubUsersBatch(objects)</span>
         </div>
       </div>
       <div class="clearfix display-none toggle-target">
@@ -965,7 +968,7 @@ remember to call <code>.then</code> to peform actual call.</p>
   <p>Stub batch endpoint</p>
 
 
-  <div class='pre p1 fill-light mt0'>stubBatch(objects: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>): this</div>
+  <div class='pre p1 fill-light mt0'>stubUsersBatch(objects: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>): this</div>
   
   
 
@@ -982,7 +985,75 @@ remember to call <code>.then</code> to peform actual call.</p>
       
         <div class='space-bottom0'>
           <div>
-            <span class='code bold'>objects</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>)</code>
+            <span class='code bold'>objects</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>)</code>
+	    Array of user objects
+
+          </div>
+          
+        </div>
+      
+    </div>
+  
+
+  
+
+  
+    
+      <div class='py1 quiet mt1 prose-big'>Returns</div>
+      <code>this</code>:
+        MiniHull instance
+
+      
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+</section>
+
+      </div>
+    </div>
+  
+    <div class='border-bottom' id='minihullstubaccountsbatch'>
+      <div class="clearfix small pointer toggle-sibling">
+        <div class="py1 contain">
+            <a class='icon pin-right py1 dark-link caret-right'>▸</a>
+            <span class='code strong strong truncate'>stubAccountsBatch(objects)</span>
+        </div>
+      </div>
+      <div class="clearfix display-none toggle-target">
+        <section class='p2 mb2 clearfix bg-white minishadow'>
+
+  
+
+  <p>Stub batch endpoint</p>
+
+
+  <div class='pre p1 fill-light mt0'>stubAccountsBatch(objects: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>): this</div>
+  
+  
+
+  
+  
+  
+  
+  
+  
+
+  
+    <div class='py1 quiet mt1 prose-big'>Parameters</div>
+    <div class='prose'>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>objects</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>)</code>
 	    Array of user objects
 
           </div>
@@ -1033,7 +1104,7 @@ remember to call <code>.then</code> to peform actual call.</p>
   <p>Generates fake ident used by MiniHull for connectors, users, segments</p>
 
 
-  <div class='pre p1 fill-light mt0'>fakeId(): <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a></div>
+  <div class='pre p1 fill-light mt0'>fakeId(): <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a></div>
   
   
 
@@ -1051,7 +1122,7 @@ remember to call <code>.then</code> to peform actual call.</p>
   
     
       <div class='py1 quiet mt1 prose-big'>Returns</div>
-      <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a></code>:
+      <code><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a></code>:
         generated fake id
 
       
@@ -1087,7 +1158,7 @@ remember to call <code>.then</code> to peform actual call.</p>
   <p>Fakes basic user objects</p>
 
 
-  <div class='pre p1 fill-light mt0'>fakeUsers(count: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>): <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a></div>
+  <div class='pre p1 fill-light mt0'>fakeUsers(count: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>): <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a></div>
   
   
 
@@ -1104,7 +1175,7 @@ remember to call <code>.then</code> to peform actual call.</p>
       
         <div class='space-bottom0'>
           <div>
-            <span class='code bold'>count</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>)</code>
+            <span class='code bold'>count</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>)</code>
 	    Number of users to generate
 
           </div>
@@ -1119,7 +1190,7 @@ remember to call <code>.then</code> to peform actual call.</p>
   
     
       <div class='py1 quiet mt1 prose-big'>Returns</div>
-      <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a></code>:
+      <code><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a></code>:
         Returns generated users
 
       
@@ -1140,11 +1211,11 @@ remember to call <code>.then</code> to peform actual call.</p>
       </div>
     </div>
   
-    <div class='border-bottom' id='minihullfakesegments'>
+    <div class='border-bottom' id='minihullfakeaccounts'>
       <div class="clearfix small pointer toggle-sibling">
         <div class="py1 contain">
             <a class='icon pin-right py1 dark-link caret-right'>▸</a>
-            <span class='code strong strong truncate'>fakeSegments(count)</span>
+            <span class='code strong strong truncate'>fakeAccounts(count)</span>
         </div>
       </div>
       <div class="clearfix display-none toggle-target">
@@ -1152,10 +1223,10 @@ remember to call <code>.then</code> to peform actual call.</p>
 
   
 
-  <p>Fake some segments</p>
+  <p>Fakes basic user objects</p>
 
 
-  <div class='pre p1 fill-light mt0'>fakeSegments(count: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>): <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a></div>
+  <div class='pre p1 fill-light mt0'>fakeAccounts(count: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>): <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a></div>
   
   
 
@@ -1172,7 +1243,75 @@ remember to call <code>.then</code> to peform actual call.</p>
       
         <div class='space-bottom0'>
           <div>
-            <span class='code bold'>count</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>)</code>
+            <span class='code bold'>count</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>)</code>
+	    Number of users to generate
+
+          </div>
+          
+        </div>
+      
+    </div>
+  
+
+  
+
+  
+    
+      <div class='py1 quiet mt1 prose-big'>Returns</div>
+      <code><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a></code>:
+        Returns generated users
+
+      
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+</section>
+
+      </div>
+    </div>
+  
+    <div class='border-bottom' id='minihullfakeuserssegments'>
+      <div class="clearfix small pointer toggle-sibling">
+        <div class="py1 contain">
+            <a class='icon pin-right py1 dark-link caret-right'>▸</a>
+            <span class='code strong strong truncate'>fakeUsersSegments(count)</span>
+        </div>
+      </div>
+      <div class="clearfix display-none toggle-target">
+        <section class='p2 mb2 clearfix bg-white minishadow'>
+
+  
+
+  <p>Fake some users segments</p>
+
+
+  <div class='pre p1 fill-light mt0'>fakeUsersSegments(count: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>): <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a></div>
+  
+  
+
+  
+  
+  
+  
+  
+  
+
+  
+    <div class='py1 quiet mt1 prose-big'>Parameters</div>
+    <div class='prose'>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>count</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>)</code>
 	    Number of segments to generate
 
           </div>
@@ -1187,7 +1326,7 @@ remember to call <code>.then</code> to peform actual call.</p>
   
     
       <div class='py1 quiet mt1 prose-big'>Returns</div>
-      <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a></code>:
+      <code><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a></code>:
         Returns generated segments
 
       
@@ -1208,11 +1347,79 @@ remember to call <code>.then</code> to peform actual call.</p>
       </div>
     </div>
   
-    <div class='border-bottom' id='minihullfakeassignment'>
+    <div class='border-bottom' id='minihullfakeaccountssegments'>
       <div class="clearfix small pointer toggle-sibling">
         <div class="py1 contain">
             <a class='icon pin-right py1 dark-link caret-right'>▸</a>
-            <span class='code strong strong truncate'>fakeAssignment()</span>
+            <span class='code strong strong truncate'>fakeAccountsSegments(count)</span>
+        </div>
+      </div>
+      <div class="clearfix display-none toggle-target">
+        <section class='p2 mb2 clearfix bg-white minishadow'>
+
+  
+
+  <p>Fake some accounts segments</p>
+
+
+  <div class='pre p1 fill-light mt0'>fakeAccountsSegments(count: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>): <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a></div>
+  
+  
+
+  
+  
+  
+  
+  
+  
+
+  
+    <div class='py1 quiet mt1 prose-big'>Parameters</div>
+    <div class='prose'>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>count</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>)</code>
+	    Number of segments to generate
+
+          </div>
+          
+        </div>
+      
+    </div>
+  
+
+  
+
+  
+    
+      <div class='py1 quiet mt1 prose-big'>Returns</div>
+      <code><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a></code>:
+        Returns generated segments
+
+      
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+</section>
+
+      </div>
+    </div>
+  
+    <div class='border-bottom' id='minihullfakeuserssegmentsassignment'>
+      <div class="clearfix small pointer toggle-sibling">
+        <div class="py1 contain">
+            <a class='icon pin-right py1 dark-link caret-right'>▸</a>
+            <span class='code strong strong truncate'>fakeUsersSegmentsAssignment()</span>
         </div>
       </div>
       <div class="clearfix display-none toggle-target">
@@ -1223,7 +1430,7 @@ remember to call <code>.then</code> to peform actual call.</p>
   <p>Radomly assing existing users to existing segments</p>
 
 
-  <div class='pre p1 fill-light mt0'>fakeAssignment(): <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a></div>
+  <div class='pre p1 fill-light mt0'>fakeUsersSegmentsAssignment(): <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a></div>
   
   
 
@@ -1241,7 +1448,115 @@ remember to call <code>.then</code> to peform actual call.</p>
   
     
       <div class='py1 quiet mt1 prose-big'>Returns</div>
-      <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a></code>:
+      <code><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a></code>:
+        users array
+
+      
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+</section>
+
+      </div>
+    </div>
+  
+    <div class='border-bottom' id='minihullfakeaccountsegmentsassignment'>
+      <div class="clearfix small pointer toggle-sibling">
+        <div class="py1 contain">
+            <a class='icon pin-right py1 dark-link caret-right'>▸</a>
+            <span class='code strong strong truncate'>fakeAccountSegmentsAssignment()</span>
+        </div>
+      </div>
+      <div class="clearfix display-none toggle-target">
+        <section class='p2 mb2 clearfix bg-white minishadow'>
+
+  
+
+  <p>Radomly assing existing users to existing segments</p>
+
+
+  <div class='pre p1 fill-light mt0'>fakeAccountSegmentsAssignment(): <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a></div>
+  
+  
+
+  
+  
+  
+  
+  
+  
+
+  
+
+  
+
+  
+    
+      <div class='py1 quiet mt1 prose-big'>Returns</div>
+      <code><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a></code>:
+        users array
+
+      
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+</section>
+
+      </div>
+    </div>
+  
+    <div class='border-bottom' id='minihullfakeuseraccountassignment'>
+      <div class="clearfix small pointer toggle-sibling">
+        <div class="py1 contain">
+            <a class='icon pin-right py1 dark-link caret-right'>▸</a>
+            <span class='code strong strong truncate'>fakeUserAccountAssignment()</span>
+        </div>
+      </div>
+      <div class="clearfix display-none toggle-target">
+        <section class='p2 mb2 clearfix bg-white minishadow'>
+
+  
+
+  <p>Radomly assing existing users to existing segments</p>
+
+
+  <div class='pre p1 fill-light mt0'>fakeUserAccountAssignment(): <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a></div>
+  
+  
+
+  
+  
+  
+  
+  
+  
+
+  
+
+  
+
+  
+    
+      <div class='py1 quiet mt1 prose-big'>Returns</div>
+      <code><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a></code>:
         users array
 
       
@@ -1277,7 +1592,7 @@ remember to call <code>.then</code> to peform actual call.</p>
   <p>Mimic the connector installation process</p>
 
 
-  <div class='pre p1 fill-light mt0'>mimicInstall(connectorUrl: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>): <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a></div>
+  <div class='pre p1 fill-light mt0'>mimicInstall(connectorUrl: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>): <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a></div>
   
   
 
@@ -1294,7 +1609,7 @@ remember to call <code>.then</code> to peform actual call.</p>
       
         <div class='space-bottom0'>
           <div>
-            <span class='code bold'>connectorUrl</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>)</code>
+            <span class='code bold'>connectorUrl</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>)</code>
 	    Connector url to install from
 
           </div>
@@ -1309,7 +1624,7 @@ remember to call <code>.then</code> to peform actual call.</p>
   
     
       <div class='py1 quiet mt1 prose-big'>Returns</div>
-      <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a></code>:
+      <code><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a></code>:
         Request promise
 
       
@@ -1345,7 +1660,7 @@ remember to call <code>.then</code> to peform actual call.</p>
   <p>Opens a url to connector dashboard</p>
 
 
-  <div class='pre p1 fill-light mt0'>mimicDashboard(connectorId: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>): <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a></div>
+  <div class='pre p1 fill-light mt0'>mimicDashboard(connectorId: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>): <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a></div>
   
   
 
@@ -1362,7 +1677,7 @@ remember to call <code>.then</code> to peform actual call.</p>
       
         <div class='space-bottom0'>
           <div>
-            <span class='code bold'>connectorId</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>)</code>
+            <span class='code bold'>connectorId</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>)</code>
 	    Optional connector id
 
           </div>
@@ -1377,7 +1692,7 @@ remember to call <code>.then</code> to peform actual call.</p>
   
     
       <div class='py1 quiet mt1 prose-big'>Returns</div>
-      <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a></code>:
+      <code><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a></code>:
         ShellJs response
 
       
@@ -1413,7 +1728,7 @@ remember to call <code>.then</code> to peform actual call.</p>
   <p>Performs post call to the selected connector. If no connectorId is passed performs the call to the first installed.</p>
 
 
-  <div class='pre p1 fill-light mt0'>mimicPostConnector(url: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>, connectorId: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>): <a href="https://developer.mozilla.org/en-US/Add-ons/SDK/High-Level_APIs/request">Request</a></div>
+  <div class='pre p1 fill-light mt0'>mimicPostConnector(url: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>, connectorId: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>): <a href="https://developer.mozilla.org/Add-ons/SDK/High-Level_APIs/request">Request</a></div>
   
   
 
@@ -1430,7 +1745,7 @@ remember to call <code>.then</code> to peform actual call.</p>
       
         <div class='space-bottom0'>
           <div>
-            <span class='code bold'>url</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>)</code>
+            <span class='code bold'>url</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>)</code>
 	    Connector endpoint url
 
           </div>
@@ -1439,7 +1754,7 @@ remember to call <code>.then</code> to peform actual call.</p>
       
         <div class='space-bottom0'>
           <div>
-            <span class='code bold'>connectorId</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>)</code>
+            <span class='code bold'>connectorId</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>)</code>
 	    Optional connector id
 
           </div>
@@ -1454,7 +1769,7 @@ remember to call <code>.then</code> to peform actual call.</p>
   
     
       <div class='py1 quiet mt1 prose-big'>Returns</div>
-      <code><a href="https://developer.mozilla.org/en-US/Add-ons/SDK/High-Level_APIs/request">Request</a></code>:
+      <code><a href="https://developer.mozilla.org/Add-ons/SDK/High-Level_APIs/request">Request</a></code>:
         Request promise
 
       
@@ -1479,7 +1794,7 @@ remember to call <code>.then</code> to peform actual call.</p>
       <div class="clearfix small pointer toggle-sibling">
         <div class="py1 contain">
             <a class='icon pin-right py1 dark-link caret-right'>▸</a>
-            <span class='code strong strong truncate'>mimicSendNotification(topic, message)</span>
+            <span class='code strong strong truncate'>mimicSendNotification(channel, messages)</span>
         </div>
       </div>
       <div class="clearfix display-none toggle-target">
@@ -1490,7 +1805,7 @@ remember to call <code>.then</code> to peform actual call.</p>
   <p>Sends a notification to all installed connectors using the information from manifest.</p>
 
 
-  <div class='pre p1 fill-light mt0'>mimicSendNotification(topic: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>, message: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a>): <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a></div>
+  <div class='pre p1 fill-light mt0'>mimicSendNotification(channel: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>, messages: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>): <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a></div>
   
   
 
@@ -1507,7 +1822,7 @@ remember to call <code>.then</code> to peform actual call.</p>
       
         <div class='space-bottom0'>
           <div>
-            <span class='code bold'>topic</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>)</code>
+            <span class='code bold'>channel</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>)</code>
 	    Notification topic
 
           </div>
@@ -1516,7 +1831,7 @@ remember to call <code>.then</code> to peform actual call.</p>
       
         <div class='space-bottom0'>
           <div>
-            <span class='code bold'>message</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a>)</code>
+            <span class='code bold'>messages</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>)</code>
 	    Notification message
 
           </div>
@@ -1531,7 +1846,7 @@ remember to call <code>.then</code> to peform actual call.</p>
   
     
       <div class='py1 quiet mt1 prose-big'>Returns</div>
-      <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a></code>:
+      <code><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a></code>:
         Request promise
 
       
@@ -1567,7 +1882,7 @@ remember to call <code>.then</code> to peform actual call.</p>
   <p>Creates a UserReport object for selected user</p>
 
 
-  <div class='pre p1 fill-light mt0'>mimicUserReport(ident: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a>): <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a></div>
+  <div class='pre p1 fill-light mt0'>mimicUserReport(ident: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a>): <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a></div>
   
   
 
@@ -1584,7 +1899,7 @@ remember to call <code>.then</code> to peform actual call.</p>
       
         <div class='space-bottom0'>
           <div>
-            <span class='code bold'>ident</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a>)</code>
+            <span class='code bold'>ident</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a>)</code>
 	    Object to indentify user we want to sent (passed to lodash 
 <code>find</code>
  function)
@@ -1601,7 +1916,7 @@ remember to call <code>.then</code> to peform actual call.</p>
   
     
       <div class='py1 quiet mt1 prose-big'>Returns</div>
-      <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a></code>:
+      <code><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a></code>:
         Built 
 <code>UserReport</code>
 
@@ -1639,7 +1954,7 @@ remember to call <code>.then</code> to peform actual call.</p>
 Alters internal db.</p>
 
 
-  <div class='pre p1 fill-light mt0'>mimicUserEntersSegment(ident: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a>, segmentId: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>): <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a></div>
+  <div class='pre p1 fill-light mt0'>mimicUserEntersSegment(ident: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a>, segmentId: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>): <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a></div>
   
   
 
@@ -1656,7 +1971,7 @@ Alters internal db.</p>
       
         <div class='space-bottom0'>
           <div>
-            <span class='code bold'>ident</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a>)</code>
+            <span class='code bold'>ident</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a>)</code>
 	    Object to indentify user we want to sent (passed to lodash 
 <code>find</code>
  function)
@@ -1667,7 +1982,7 @@ Alters internal db.</p>
       
         <div class='space-bottom0'>
           <div>
-            <span class='code bold'>segmentId</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>)</code>
+            <span class='code bold'>segmentId</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>)</code>
 	    Id of the segment user should "enter"
 
           </div>
@@ -1682,7 +1997,7 @@ Alters internal db.</p>
   
     
       <div class='py1 quiet mt1 prose-big'>Returns</div>
-      <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a></code>:
+      <code><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a></code>:
         Request promise
 
       
@@ -1719,7 +2034,7 @@ Alters internal db.</p>
 Alters internal db.</p>
 
 
-  <div class='pre p1 fill-light mt0'>mimicUserExitsSegment(ident: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a>, segmentId: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>): <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a></div>
+  <div class='pre p1 fill-light mt0'>mimicUserExitsSegment(ident: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a>, segmentId: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>): <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a></div>
   
   
 
@@ -1736,7 +2051,7 @@ Alters internal db.</p>
       
         <div class='space-bottom0'>
           <div>
-            <span class='code bold'>ident</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a>)</code>
+            <span class='code bold'>ident</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a>)</code>
 	    Object to indentify user we want to sent (passed to lodash 
 <code>find</code>
  function)
@@ -1747,7 +2062,7 @@ Alters internal db.</p>
       
         <div class='space-bottom0'>
           <div>
-            <span class='code bold'>segmentId</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>)</code>
+            <span class='code bold'>segmentId</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>)</code>
 	    Id of the segment user should leave
 
           </div>
@@ -1762,7 +2077,7 @@ Alters internal db.</p>
   
     
       <div class='py1 quiet mt1 prose-big'>Returns</div>
-      <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a></code>:
+      <code><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a></code>:
         Request promise
 
       
@@ -1799,7 +2114,7 @@ Alters internal db.</p>
 Alters internal db.</p>
 
 
-  <div class='pre p1 fill-light mt0'>mimicUpdateUser(ident: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a>, traits: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a>): <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a></div>
+  <div class='pre p1 fill-light mt0'>mimicUpdateUser(ident: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a>, traits: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a>): <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a></div>
   
   
 
@@ -1816,7 +2131,7 @@ Alters internal db.</p>
       
         <div class='space-bottom0'>
           <div>
-            <span class='code bold'>ident</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a>)</code>
+            <span class='code bold'>ident</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a>)</code>
 	    Object to indentify user we want to sent (passed to lodash 
 <code>find</code>
  function)
@@ -1827,7 +2142,7 @@ Alters internal db.</p>
       
         <div class='space-bottom0'>
           <div>
-            <span class='code bold'>traits</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a>)</code>
+            <span class='code bold'>traits</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a>)</code>
 	    Target traits values
 
           </div>
@@ -1842,7 +2157,7 @@ Alters internal db.</p>
   
     
       <div class='py1 quiet mt1 prose-big'>Returns</div>
-      <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a></code>:
+      <code><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a></code>:
         Request promise
 
       
@@ -1878,7 +2193,7 @@ Alters internal db.</p>
   <p>Mimics connector private settings update event</p>
 
 
-  <div class='pre p1 fill-light mt0'>mimicUpdateConnector(settings: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a>, connectorId: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>): <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a></div>
+  <div class='pre p1 fill-light mt0'>mimicUpdateConnector(settings: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a>, connectorId: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>): <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a></div>
   
   
 
@@ -1895,7 +2210,7 @@ Alters internal db.</p>
       
         <div class='space-bottom0'>
           <div>
-            <span class='code bold'>settings</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a>)</code>
+            <span class='code bold'>settings</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a>)</code>
 	    New connector private settings
 
           </div>
@@ -1904,7 +2219,7 @@ Alters internal db.</p>
       
         <div class='space-bottom0'>
           <div>
-            <span class='code bold'>connectorId</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>)</code>
+            <span class='code bold'>connectorId</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>)</code>
 	    Optional connector id
 
           </div>
@@ -1919,7 +2234,7 @@ Alters internal db.</p>
   
     
       <div class='py1 quiet mt1 prose-big'>Returns</div>
-      <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a></code>:
+      <code><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a></code>:
         Request promise
 
       
@@ -1940,11 +2255,11 @@ Alters internal db.</p>
       </div>
     </div>
   
-    <div class='border-bottom' id='minihullmimicupdatesegment'>
+    <div class='border-bottom' id='minihullmimicupdateusersegment'>
       <div class="clearfix small pointer toggle-sibling">
         <div class="py1 contain">
             <a class='icon pin-right py1 dark-link caret-right'>▸</a>
-            <span class='code strong strong truncate'>mimicUpdateSegment(segmentName, segmentId)</span>
+            <span class='code strong strong truncate'>mimicUpdateUserSegment(segmentName, segmentId)</span>
         </div>
       </div>
       <div class="clearfix display-none toggle-target">
@@ -1955,7 +2270,7 @@ Alters internal db.</p>
   <p>Mimics an event when segment was altered.</p>
 
 
-  <div class='pre p1 fill-light mt0'>mimicUpdateSegment(segmentName: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>, segmentId: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>): <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a></div>
+  <div class='pre p1 fill-light mt0'>mimicUpdateUserSegment(segmentName: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>, segmentId: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>): <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a></div>
   
   
 
@@ -1972,7 +2287,7 @@ Alters internal db.</p>
       
         <div class='space-bottom0'>
           <div>
-            <span class='code bold'>segmentName</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>)</code>
+            <span class='code bold'>segmentName</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>)</code>
 	    Segment name to sent
 
           </div>
@@ -1981,7 +2296,7 @@ Alters internal db.</p>
       
         <div class='space-bottom0'>
           <div>
-            <span class='code bold'>segmentId</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>)</code>
+            <span class='code bold'>segmentId</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>)</code>
 	    Optional segment id
 
           </div>
@@ -1996,7 +2311,7 @@ Alters internal db.</p>
   
     
       <div class='py1 quiet mt1 prose-big'>Returns</div>
-      <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a></code>:
+      <code><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a></code>:
         Request promise
 
       
@@ -2017,11 +2332,11 @@ Alters internal db.</p>
       </div>
     </div>
   
-    <div class='border-bottom' id='minihullmimicbatchcall'>
+    <div class='border-bottom' id='minihullmimicusersbatchcall'>
       <div class="clearfix small pointer toggle-sibling">
         <div class="py1 contain">
             <a class='icon pin-right py1 dark-link caret-right'>▸</a>
-            <span class='code strong strong truncate'>mimicBatchCall(connectorId)</span>
+            <span class='code strong strong truncate'>mimicUsersBatchCall(connectorId)</span>
         </div>
       </div>
       <div class="clearfix display-none toggle-target">
@@ -2032,7 +2347,7 @@ Alters internal db.</p>
   <p>Mimics a batch call to the connector</p>
 
 
-  <div class='pre p1 fill-light mt0'>mimicBatchCall(connectorId: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>): <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a></div>
+  <div class='pre p1 fill-light mt0'>mimicUsersBatchCall(connectorId: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>): <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a></div>
   
   
 
@@ -2049,7 +2364,7 @@ Alters internal db.</p>
       
         <div class='space-bottom0'>
           <div>
-            <span class='code bold'>connectorId</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>)</code>
+            <span class='code bold'>connectorId</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>)</code>
 	    Optional connector id
 
           </div>
@@ -2064,7 +2379,7 @@ Alters internal db.</p>
   
     
       <div class='py1 quiet mt1 prose-big'>Returns</div>
-      <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a></code>:
+      <code><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a></code>:
         Request promise
 
       
@@ -2113,7 +2428,7 @@ http server special endpoint for <code>mimic*</code> methods which serve content
 This router is applied to every MiniHull instance in it's constructor</p>
 
 
-  <div class='pre p1 fill-light mt0'>router(minihull: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a>): Router</div>
+  <div class='pre p1 fill-light mt0'>router(minihull: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a>): Router</div>
   
   
 
@@ -2130,7 +2445,7 @@ This router is applied to every MiniHull instance in it's constructor</p>
       
         <div class='space-bottom0'>
           <div>
-            <span class='code bold'>minihull</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a>)</code>
+            <span class='code bold'>minihull</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a>)</code>
 	    Minihull instance
 
           </div>
@@ -2167,8 +2482,8 @@ This router is applied to every MiniHull instance in it's constructor</p>
         
       </div>
     </div>
-  </div>
   <script src='assets/anchor.js'></script>
+  <script src='assets/split.js'></script>
   <script src='assets/site.js'></script>
 </body>
 </html>

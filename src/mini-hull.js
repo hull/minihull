@@ -159,6 +159,11 @@ class MiniHull extends MiniApplication {
    * @return {superagent} SuperAgent instance
    */
   notifyConnector(connector, url, channel, messages, usersSegments = [], accountsSegments = []) {
+
+    if (typeof connector === "string") {
+      throw new Error("the `notifyConnector` method uses the following signature: function(connector, url, channel, messages, usersSegments = [], accountsSegments = []){} Are you using the legacy, deprecated signature? ")
+    }
+
     const body = {
       notification_id: this.fakeId(),
       configuration: {
@@ -179,6 +184,10 @@ class MiniHull extends MiniApplication {
       .then((res) => res);
   }
 
+  smartNotifyConnector(){
+    throw new Error("The `smartNotifyConnector` method has been replaced by `notifyConnector` - but it keeps the same signature. Beware of conflicts with the legacy `notifyConnector` method");
+  }
+
   /*
    * --- High level stubs ---
    */
@@ -193,6 +202,10 @@ class MiniHull extends MiniApplication {
     this.stubApp(`/api/v1/${object.id}`).respond(object);
     this.stubApp("/api/v1/app").respond(object);
     return this;
+  }
+
+  stubSegments(segments) {
+    throw new Error("The `stubSegments` method doesn't exist anymore. Please use `stubUserSegments` instead");
   }
 
   /**

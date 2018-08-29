@@ -161,7 +161,7 @@ class MiniHull extends MiniApplication {
   notifyConnector(connector, url, channel, messages, usersSegments = [], accountsSegments = []) {
 
     if (typeof connector === "string") {
-      throw new Error("the `notifyConnector` method uses the following signature: function(connector, url, channel, messages, usersSegments = [], accountsSegments = []){} Are you using the legacy, deprecated signature? ")
+      throw new Error("The `notifyConnector` method uses the following signature: `function(connector, url, channel, messages, usersSegments = [], accountsSegments = [])`. Are you using the legacy, deprecated signature?");
     }
 
     const body = {
@@ -184,7 +184,7 @@ class MiniHull extends MiniApplication {
       .then((res) => res);
   }
 
-  smartNotifyConnector(){
+  smartNotifyConnector() {
     throw new Error("The `smartNotifyConnector` method has been replaced by `notifyConnector` - but it keeps the same signature. Beware of conflicts with the legacy `notifyConnector` method");
   }
 

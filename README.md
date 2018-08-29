@@ -1,18 +1,19 @@
-# Mini Hull
+# MiniHull
 
-## Compatibility
+## Versions Compatibility
 
-minihull v3.0.0 relies on Hull-client v2 and Hull-node 0.14.0.
-Use minihull 2.1.2 if you're using previous versions of the libraries
+`Minihull` v3.0.0 relies on `hull-node` v0.14.0 and `hull-client` v2.0.0 and up.
+Use `Minihull` v2.1.2 if you're using previous versions of the libraries.
 
-## scriptable usage
+## Scriptable usage
 
 For automatic tests use the following methods:
 
 - **stubConnector()** - for stubbing response for connector
 - **stubUserSegments()** - for stubbing response for user segments
 - **stubAccountSegments()** - for stubbing response for account segments
-- **stubBatch()** - for stubbing batching to connector
+- **stubUsersBatch()** - for stubbing users batching to connector
+- **stubAccountsBatch()** - for stubbing accounts batching to connector
 
 ```js
 const MiniHull = require("minihull");
@@ -21,12 +22,14 @@ const connectorId = minihull.fakeId();
 
 miniHull.listen(3000);
 
-miniHull.stubConnector({
+const connector = {
   id: connectorId,
   private_settings: {
     enrich_segments: ["1"]
   }
-});
+};
+
+miniHull.stubConnector(connector);
 
 miniHull.stubUserSegments([{
   id: "1",
@@ -38,7 +41,7 @@ miniHull.stubAccountSegments([{
   name: "A"
 }]);
 
-miniHull.postConnector(connectorId, "http://localhost:8000/test").then(() => {
+miniHull.postConnector(connector, "http://localhost:8000/test").then(() => {
   assert(miniHull.requests.get("incoming").length, 1);
   miniHull.close();
 });

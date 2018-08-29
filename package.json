@@ -1,6 +1,6 @@
 {
   "name": "minihull",
-  "version": "3.0.1",
+  "version": "3.0.2",
   "description": "",
   "main": "src/mini-hull.js",
   "scripts": {
@@ -14,7 +14,7 @@
     "faker": "^4.1.0",
     "lodash": "^4.17.4",
     "lodash-id": "^0.14.0",
-    "mini-application": "^1.1.0",
+    "mini-application": "^1.1.1",
     "shelljs": "^0.8.2"
   },
   "optionalDependencies": {

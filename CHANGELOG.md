@@ -1,3 +1,7 @@
+# v3.0.2
+- minor documentation updates
+- workaround sinon related issue by forcing mini-application upgrade
+
 # v3.0.1
 - add helpful errors to notify when using deprecated signatures and methods
 - update documentation

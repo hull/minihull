@@ -2,7 +2,7 @@
   "name": "minihull",
   "version": "3.0.2",
   "description": "",
-  "main": "src/mini-hull.js",
+  "main": "src/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "documentation": "documentation lint src/ && documentation build src/ -f html -o docs",
@@ -11,16 +11,37 @@
   "author": "Michał Rączka",
   "dependencies": {
     "bluebird": "^3.5.0",
+    "express": "^4.16.3",
     "faker": "^4.1.0",
+    "hull": "^0.13.16",
     "lodash": "^4.17.4",
     "lodash-id": "^0.14.0",
     "mini-application": "^1.1.1",
-    "shelljs": "^0.8.2"
+    "shelljs": "^0.8.2",
+    "supertest": "^3.3.0"
   },
   "optionalDependencies": {
-    "ngrok": "^2.2.14"
+    "ngrok": "^3.0.1"
   },
   "devDependencies": {
-    "documentation": "^5.4.0"
+    "@babel/cli": "^7.0.0",
+    "@babel/core": "^7.0.0",
+    "@babel/plugin-transform-flow-comments": "^7.0.0",
+    "@babel/preset-env": "^7.0.0",
+    "@babel/preset-flow": "^7.0.0",
+    "@babel/register": "^7.0.0",
+    "babel-eslint": "^9.0.0",
+    "babel-loader": "^8.0.0",
+    "compose-middleware": "^5.0.0",
+    "documentation": "https://github.com/vicapow/documentation#update-babel-dist",
+    "eslint": "^5.3.0",
+    "eslint-config-prettier": "^3.0.1",
+    "eslint-plugin-flowtype": "^2.50.0",
+    "eslint-plugin-flowtype-errors": "^3.6.0",
+    "eslint-plugin-import": "^2.13.0",
+    "eslint-plugin-prettier": "^2.6.2",
+    "flow": "^0.2.3",
+    "jwt-simple": "^0.5.1",
+    "nock": "^9.6.1"
   }
 }

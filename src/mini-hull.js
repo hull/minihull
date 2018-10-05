@@ -6,7 +6,6 @@ const MiniApplication = require("mini-application");
 const crypto = require("crypto");
 const faker = require("faker");
 const shell = require("shelljs");
-
 const minihullRouter = require("./router");
 
 /**
@@ -34,6 +33,7 @@ const minihullRouter = require("./router");
  * @param {string} options.secret secret used to sign requests to all installed connector instances (see `mimicInstall` method)
  */
 class MiniHull extends MiniApplication {
+
   constructor(options = {}) {
     super();
 

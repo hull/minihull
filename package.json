@@ -3,6 +3,7 @@
   "version": "3.0.2",
   "description": "",
   "main": "src/mini-hull.js",
+  "license": "MIT",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "documentation": "documentation lint src/ && documentation build src/ -f html -o docs",
